@@ -14,8 +14,8 @@ This module includes:
 from collections import deque
 import random
 #from heuristic import h_function
-from heuristic1 import h_function
-#from heuristic2 import h_function
+#from heuristic1 import h_function
+from heuristic2 import h_function
 
 
 NO_MOVE =-1
