@@ -16,6 +16,7 @@ public class Main {
 	private static Map<String, Double> unigramModel = new HashMap<>();
 	private static Map<String, Double> bigramModel = new HashMap<>();
 	private static Map<String, Double> trigramModel = new HashMap<>();
+	private static Map<String, Double> trigramSmoothModel = new HashMap<>();
 	private static String suffix = "en";
 
 	private static int charCount = 0;
@@ -26,7 +27,7 @@ public class Main {
 		Scanner scan = new Scanner(System.in);
 		boolean terminate = true;
 		while (terminate) {
-			System.out.print("choose the training file: \n1. englist\n2. Spanish\n3. German\n4. Quit\n5. Test\n");
+			System.out.print("choose the training file: \n1. englist\n2. Spanish\n3. German\n4. Quit\n5. Test\n6 Write_to_file\n");
 			int fileNum = scan.nextInt();
 			String filename = "training.en";
 			switch (fileNum) {
@@ -46,14 +47,34 @@ public class Main {
 				System.exit(0);
 				break;
 			case 5:
-				System.out.println("1. unigram_en");
-				test("bigram_model_en.txt", 2);
+				System.out.println("press 1 to test unigram_en.");
+				System.out.println("press 2 to test bigram_en.");
+				System.out.println("press 3 to test trigram_en.");
+				int testcase = scan.nextInt();
+				switch (testcase) {
+				case 1:
+					test("unigram_model_en.txt", 1);
+					break;
+				case 2:
+					test("bigram_model_en.txt", 2);
+					break;
+				case 3:
+					test("trigram_model_en.txt", 3);
+					break;
+				}
+				break;
+			case 6:
+				writeUnigram();
+				writeBigram();
+				writeTrigram(trigramModel);
+				writeTrigram(trigramSmoothModel);
 				break;
 			default:
 				filename = "training.en";
 				suffix = "en";
 				break;
 			}
+
 			charMap = new HashMap<>();
 			biCharMap = new HashMap<>();
 			triCharMap = new HashMap<>();
@@ -61,7 +82,6 @@ public class Main {
 			bigramModel = new HashMap<>();
 			trigramModel = new HashMap<>();
 			File file = new File(filename);
-
 			Scanner sc = new Scanner(file);
 			while (sc.hasNextLine()) {
 				String token = sc.nextLine();
@@ -69,20 +89,36 @@ public class Main {
 				fillBiCharMap(token);
 				fillTriCharMap(token);
 			}
+			// System.out.println(charMap.get("?"));
 			getUnigramModel();
 			getBigramModel();
 			getTrigramModel();
+			getLaplaceTriModel();
 
-			writeUnigram();
-			writeBigram();
-			writeTrigram();
+			
+		}
+	}
 
+	/**
+	 * Generate laplace Trigram model
+	 */
+	private static void getLaplaceTriModel() {
+		for (Map.Entry<String, Integer> entry : triCharMap.entrySet()) {
+			String key = entry.getKey();
+			String base = key.charAt(0) + "" + key.charAt(1);
+			int baseCount = biCharMap.get(base);
+			for (Map.Entry<String, Integer> letterentry : charMap.entrySet()) {
+				trigramSmoothModel.put(base+letterentry.getKey(), 1.0/(baseCount+charMap.size()));
+			}
+			double pro = entry.getValue() * 1.0 / (baseCount+charMap.size());
+			trigramSmoothModel.put(key, pro);
 		}
 	}
 
 	/**
 	 * use this method to test
-	 * @throws FileNotFoundException 
+	 * 
+	 * @throws FileNotFoundException
 	 */
 	private static void test(String filename, int gram) throws FileNotFoundException {
 		Map<String, Double> testModel = new HashMap<>();
@@ -93,30 +129,42 @@ public class Main {
 			String[] token = line.split("\t");
 			testModel.put(token[0], Double.valueOf(token[1]));
 		}
-		file = new File("test");
-		scan = new Scanner(file);
+		File test = new File("test");
+		scan.close();
+		Scanner in = new Scanner(test);
 		double logProp = 0.0;
 		int totalCountOfLetters = 0;
-		while (scan.hasNextLine()) {
-			String line = scan.nextLine();
-			double totalProp = 1.0;
-			for (int i = 0; i < line.length()-gram; i+=gram ) {
-				String key = Character.toString(line.charAt(i)) + Character.toString(line.charAt(i+1));
+		while (in.hasNextLine()) {
+			String line = in.nextLine();
+			totalCountOfLetters += line.length();
+			double totalProp = 0;
+			
+			for (int i = 0; i < line.length() - gram; i += gram) {
+				String key = "";
+				if (gram == 3) {
+					key = Character.toString(line.charAt(i)) + Character.toString(line.charAt(i + 1)) + Character.toString(line.charAt(i + 2));
+				} else if (gram ==2) {
+					key = Character.toString(line.charAt(i)) + Character.toString(line.charAt(i + 1));
+				} else if (gram ==1) {
+					key = Character.toString(line.charAt(i));
+				}
 				double v;
-				if (testModel.get(key)==null) 
+				if (testModel.get(key) == null) {
 					v = 0;
-				else v = testModel.get(key);
-				totalProp *= v;
-				totalCountOfLetters += gram;
+				}else {
+					v = testModel.get(key);
+				}
+				double log = Math.log(v) / Math.log(2.0);
+				totalProp += log;
 			}
-			logProp += (Math.log(totalProp)/Math.log(2));
+			logProp += totalProp;
 		}
-		double perplexity = Math.pow(2, -(logProp)/totalCountOfLetters);
+		double perplexity = Math.pow(2.0, -(logProp)/totalCountOfLetters);
 		System.out.println(perplexity);
-		
+		in.close();
 	}
 
-	private static void writeTrigram() throws IOException {
+	private static void writeTrigram(Map<String, Double> trigramModel) throws IOException {
 		FileWriter fw = new FileWriter("trigram_model_" + suffix + ".txt");
 		PrintWriter pw = new PrintWriter(fw);
 		Iterator it = trigramModel.entrySet().iterator();
@@ -163,6 +211,9 @@ public class Main {
 		for (Map.Entry<String, Integer> entry : triCharMap.entrySet()) {
 			String key = entry.getKey();
 			String base = key.charAt(0) + "" + key.charAt(1);
+			for (Map.Entry<String, Integer> letterentry : charMap.entrySet()) {
+				trigramModel.put(base+letterentry.getKey(), 0.0);
+			}
 			int baseCount = biCharMap.get(base);
 			double pro = entry.getValue() * 1.0 / baseCount;
 			trigramModel.put(key, pro);
