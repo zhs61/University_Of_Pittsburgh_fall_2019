@@ -3,10 +3,14 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
+
+import javax.swing.JTable;
 
 public class Test {
 
@@ -23,13 +27,25 @@ public class Test {
 
 	private static String suffix = "en";
 	private static String regex = "";
-	
-	private static int count =0;
+
+	private static int count = 0;
 	private static int charCount = 0;
 
+	private static JTable table = new JTable();
+	private static Map<String, ArrayList<Double>> CompletResult = new HashMap<>();
+	
 	public static void main(String[] args) throws IOException {
-		
-		
+		// set the column name
+		ArrayList<String> columnName = new ArrayList<String>();
+		for (int i = 0; i < 102; i++) {
+			if (i ==0) {
+				columnName.add("Model");
+			} else {
+				columnName.add(i+"");
+			}
+			
+		}
+		columnName.toArray();
 		// train with english data
 		for (int i = 0; i < 3; i++) {
 			// reset everything
@@ -63,14 +79,13 @@ public class Test {
 			Scanner sc = new Scanner(file);
 			while (sc.hasNextLine()) {
 				String token = sc.nextLine();
-				token = token.replaceAll(regex, "");
+				// token = token.replaceAll(regex, "");
 				fillCharMap(token);
 				fillBiCharMap(token);
 				fillTriCharMap(token);
 			}
 			sc.close();
 
-			
 			getUnigramModel();
 			getBigramModel();
 			formEmtyTrigramModel();
@@ -78,6 +93,10 @@ public class Test {
 			getLaplaceTriModel();
 			getBackOffTriModel();
 			getInterpolationModel();
+			
+			testProbUnigram();
+			testProbBigram();
+			
 			
 			writeUnigram();
 			// test("unigram_model.en", 1);
@@ -95,58 +114,116 @@ public class Test {
 		test("backoff_trigram_model.en", 3);
 		test("interpolation_trigram_model.en", 3);
 
-//		System.out.println("Spanish: ");
-//		test("unigram_model.es", 1);
-//		test("bigram_model.es", 2);
-//		test("trigram_model.es", 3);
-//		test("laplace_trigram_model.es", 3);
-//		test("backoff_trigram_model.es", 3);
-//		test("interpolation_trigram_model.es", 3);
-//
-//		System.out.println("Germany: ");
-//		test("unigram_model.de", 1);
-//		test("bigram_model.de", 2);
-//		test("trigram_model.de", 3);
-//		test("laplace_trigram_model.de", 3);
-//		test("backoff_trigram_model.de", 3);
-//		test("interpolation_trigram_model.de", 3);
+		System.out.println("Spanish: ");
+		test("unigram_model.es", 1);
+		test("bigram_model.es", 2);
+		test("trigram_model.es", 3);
+		test("laplace_trigram_model.es", 3);
+		test("backoff_trigram_model.es", 3);
+		test("interpolation_trigram_model.es", 3);
+
+		System.out.println("Germany: ");
+		test("unigram_model.de", 1);
+		test("bigram_model.de", 2);
+		test("trigram_model.de", 3);
+		test("laplace_trigram_model.de", 3);
+		test("backoff_trigram_model.de", 3);
+		test("interpolation_trigram_model.de", 3);
+		
+		printResult();
+	}
+
+	
+
+	private static void printResult() throws IOException {
+		String line = "";
+		FileWriter fw = new FileWriter("PP_Result");
+		PrintWriter pw = new PrintWriter(fw);
+		for (Map.Entry<String, ArrayList<Double>> entry : CompletResult.entrySet()) {
+			line = entry.getKey() + " : ";
+			for (Double d : entry.getValue()) {
+				line += String.format("%.2f", d) + " ";
+			}
+			System.out.println(line);
+			pw.println(line);	
+		}
+		
+	}
+
+
+
+	// ================================================================ Test Probability
+	// ===============================================================
+	private static void testProbUnigram() {
+		double totalProb = 0.0;
+		for (Map.Entry<String, Double> entry : unigramModel.entrySet()) {
+			totalProb += entry.getValue();
+		}
+		// System.out.println("Unigram Model total Probability: "+totalProb);
+	}
+	
+	private static void testProbBigram() {
+		double totalProb = 0.0;
+		ArrayList<Double> result = new ArrayList<>();
+		for (Map.Entry<String, Double> entry : bigramModel.entrySet()) {
+			totalProb= entry.getValue();
+			String base = entry.getKey().charAt(0) + "";
+			for (Map.Entry<String, Double> entry1 : bigramModel.entrySet()) {
+				String base1 = entry1.getKey().charAt(0) + "";
+				if (!entry1.equals(entry) && base1.contentEquals(base) ) {
+					totalProb += entry1.getValue();
+				}
+			}
+			result.add(totalProb);
+			// System.out.println("Bigram Model total Probability: "+totalProb);
+		}
+
 	}
 
 	// ================================================================ Smoothing
 	// ===============================================================
 
 	private static void getInterpolationModel() {
-		for (Map.Entry<String, Double> entry1 : emptyTrigramModel.entrySet()) {
-			trigramInterpolationModel.put(entry1.getKey(), 0.0);
+		for (Map.Entry<String, Double> element : emptyTrigramModel.entrySet()) {
+			trigramInterpolationModel.put(element.getKey(),0.0);
 		}
+		//trigramInterpolationModel = emptyTrigramModel;
 		for (Map.Entry<String, Double> entry : trigramInterpolationModel.entrySet()) {
 			String key = entry.getKey();
 			double pro = 0.0;
+//			if (key.contentEquals("hZF")) {
+//				System.out.println();
+//			}
 			if (triCharMap.containsKey(key)) {
 				String base = key.charAt(0) + "" + key.charAt(1);
 				int baseCount = biCharMap.get(base);
-				pro += (0.33 * triCharMap.get(key) / baseCount);
+				pro += (0.33 * triCharMap.get(key) * 1.0 / baseCount);
 			}
 			if (biCharMap.containsKey(key.charAt(1) + "" + key.charAt(2))) {
 				String base = "" + key.charAt(1);
 				int baseCount = charMap.get(base);
-				pro += (0.33 * biCharMap.get(key.charAt(1) + "" + key.charAt(2)) / baseCount);
+				pro += (0.33 * biCharMap.get(key.charAt(1) + "" + key.charAt(2)) * 1.0 / baseCount);
 			}
 			if (charMap.containsKey(key.charAt(2) + "")) {
-				pro += (0.33 * charMap.get(key.charAt(2) + "") / charCount);
+				pro += (0.33 * unigramModel.get(""+key.charAt(2)));
 			}
 			trigramInterpolationModel.put(key, pro);
 		}
 	}
 
 	private static void getBackOffTriModel() {
-		trigramBackoffModel = emptyTrigramModel;
+		// trigramBackoffModel = emptyTrigramModel;
+		for (Map.Entry<String, Double> element : emptyTrigramModel.entrySet()) {
+			trigramBackoffModel.put(element.getKey(),0.0);
+		}
 		for (Map.Entry<String, Double> entry : trigramBackoffModel.entrySet()) {
 			String key = entry.getKey();
+//			if (key.contentEquals("har"))
+//				System.out.println();
 			if (triCharMap.containsKey(key)) {
 				String base = key.charAt(0) + "" + key.charAt(1);
 				int baseCount = biCharMap.get(base);
-				double pro = triCharMap.get(key)/ baseCount;
+				double pro = triCharMap.get(key)*1.0 / baseCount;
 				trigramBackoffModel.put(key, pro);
 			} else if (biCharMap.containsKey(key.charAt(1) + "" + key.charAt(2))) {
 				String base = "" + key.charAt(1);
@@ -165,7 +242,10 @@ public class Test {
 	 * Generate laplace Trigram model
 	 */
 	private static void getLaplaceTriModel() {
-		trigramLaplaceModel = emptyTrigramModel;
+		// trigramLaplaceModel = emptyTrigramModel;
+		for (Map.Entry<String, Double> element : emptyTrigramModel.entrySet()) {
+			trigramLaplaceModel.put(element.getKey(),0.0);
+		}
 		double pro = 0.0;
 		for (Map.Entry<String, Double> entry : trigramLaplaceModel.entrySet()) {
 			pro = 0.0;
@@ -186,7 +266,7 @@ public class Test {
 			}
 			trigramLaplaceModel.put(key, pro);
 		}
-		System.out.println();
+
 	}
 
 	// ================================================================ Test
@@ -197,9 +277,8 @@ public class Test {
 	 * @throws FileNotFoundException
 	 */
 	private static void test(String filename, int gram) throws FileNotFoundException {
-		if (filename.endsWith("en")) {
-			regex = "[^\\w.,;:!?]";
-		}
+		ArrayList<Double> result = new ArrayList<Double>();
+		
 		// read in the model
 		Map<String, Double> testModel = new HashMap<>();
 		File file = new File(filename);
@@ -220,11 +299,11 @@ public class Test {
 		while (in.hasNextLine()) {
 			u++;
 			String line = in.nextLine();
-			line = line.replaceAll(regex, "");
-			totalCountOfLetters += 1.0*line.length()/gram;
+			// line = line.replaceAll(regex, "");
+			totalCountOfLetters += 1.0 * line.length() / gram;
 			double totalProp = 0;
 
-			for (int i = 0; i < line.length() - gram + 1; i+=gram) {
+			for (int i = 0; i < line.length() - gram + 1; i += gram) {
 				String key = "";
 				if (gram == 3) {
 					key = Character.toString(line.charAt(i)) + Character.toString(line.charAt(i + 1))
@@ -240,18 +319,25 @@ public class Test {
 				} else {
 					v = testModel.get(key);
 				}
+//				if (v == 0.0)
+//					System.out.println();
 				double log = Math.log(v) / Math.log(2.0);
 				totalProp += log;
 
 //				totalProp *= (1.0 / v);
 			}
-			 double sentencePP = Math.pow(2.0, -(totalProp) / (line.length()/gram*1.0));
-			 // System.out.println("S" + u + ": " + sentencePP);
+			double sentencePP = Math.pow(2.0, -(totalProp) / (line.length() / gram * 1.0));
+			// System.out.println("S" + u + ": " + sentencePP);
+			
+			result.add(sentencePP);
 			logProp += totalProp;
 		}
+		
 		double perplexity = Math.pow(2.0, -(logProp) / totalCountOfLetters);
 //		double perplexity = Math.pow(Math.E, Math.log(logProp)/totalCountOfLetters);
-		System.out.println(perplexity);
+ 		// System.out.println(perplexity);
+		result.add(perplexity);
+		CompletResult.put(filename.substring(0,7) + "_" + filename.substring(filename.length()-2), result);
 		in.close();
 	}
 
@@ -267,6 +353,7 @@ public class Test {
 			pw.print(element.getKey() + "\t" + element.getValue() + "\n");
 		}
 		pw.close();
+		fw.close();
 	}
 
 	private static void writeBackoffTrigram() throws IOException {
@@ -278,6 +365,8 @@ public class Test {
 			pw.print(element.getKey() + "\t" + element.getValue() + "\n");
 		}
 		pw.close();
+		fw.close();
+		
 	}
 
 	private static void writeLaplaceTrigram() throws IOException {
@@ -286,9 +375,13 @@ public class Test {
 		Iterator it = trigramLaplaceModel.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry element = (Map.Entry) it.next();
+//			if (element.getKey().equals("har")) {
+//				System.out.println();
+//			}
 			pw.print(element.getKey() + "\t" + element.getValue() + "\n");
 		}
 		pw.close();
+		fw.close();
 	}
 
 	private static void writeTrigram() throws IOException {
@@ -300,6 +393,7 @@ public class Test {
 			pw.print(element.getKey() + "\t" + element.getValue() + "\n");
 		}
 		pw.close();
+		fw.close();
 	}
 
 	/**
@@ -318,7 +412,6 @@ public class Test {
 		pw.close();
 		fw.close();
 	}
-	
 
 	/**
 	 * write the unigram probability to file 'unigram' model
@@ -340,12 +433,15 @@ public class Test {
 	// ================================================================ Form Model
 	// ===============================================================
 	private static void getTrigramModel() {
-		trigramModel = emptyTrigramModel;
+		// trigramModel = emptyTrigramModel;
+		for (Map.Entry<String, Double> element : emptyTrigramModel.entrySet()) {
+			trigramModel.put(element.getKey(),0.0);
+		}
 		for (Map.Entry<String, Integer> entry : triCharMap.entrySet()) {
 			String key = entry.getKey();
 			String base = key.charAt(0) + "" + key.charAt(1);
 			int baseCount = biCharMap.get(base);
-			double pro = entry.getValue()/ baseCount;
+			double pro = entry.getValue() / baseCount;
 			trigramModel.put(key, pro);
 		}
 
