@@ -36,16 +36,6 @@ public class Test {
 	
 	public static void main(String[] args) throws IOException {
 		// set the column name
-		ArrayList<String> columnName = new ArrayList<String>();
-		for (int i = 0; i < 102; i++) {
-			if (i ==0) {
-				columnName.add("Model");
-			} else {
-				columnName.add(i+"");
-			}
-			
-		}
-		columnName.toArray();
 		// train with english data
 		for (int i = 0; i < 3; i++) {
 			// reset everything
