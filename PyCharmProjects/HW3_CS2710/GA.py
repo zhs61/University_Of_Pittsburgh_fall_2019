@@ -56,7 +56,7 @@ for curr_iter in range(NUM_GENERATIONS):
     
     # print stats for every 50th population
     if curr_iter % 50 == 0:
-        print('Iteration [{}] of [{}] ({:.2f}%) -- Best solution: cost = [{:.2f}] -- Population size [{}]'.format(curr_iter, MAX_ITERATIONS, curr_iter * 100 / MAX_ITERATIONS, best_fitness, len(population)))   
+        print('Iteration [{}] of [{}] ({:.2f}%) -- Best solution: cost = [{:.2f}] -- Population size [{}]'.format(curr_iter, NUM_GENERATIONS, curr_iter * 100 / MAX_ITERATIONS, best_fitness, len(population)))
     
 
 best_solution = population.get_best_individual()
