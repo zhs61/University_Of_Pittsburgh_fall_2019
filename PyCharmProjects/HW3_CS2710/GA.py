@@ -16,7 +16,7 @@ import os
 N_POP = 500 # population size
 NUM_GENERATIONS = 500 #number of generations to run
 MUTATION_PROB = 0.05 #probability of an individual being mutated
-CULLING_PERC = 0.05 #percentage of the least fit individuals to be removed
+CULLING_PERC = 0.25 #percentage of the least fit individuals to be removed
 ELITE_PERC = 0.05 #proportion of best individuals to carry over from one generation to the next
 OUT_DIR = 'fig/' #directory where to place the plots (it will be automatically created if not existent)
 
@@ -43,8 +43,8 @@ min_fitness_vals.append(population.min_fitness())
 pop_size.append(len(population))  
     
 # simulate for the MAX_ITERATION number of generations
+#for curr_iter in range(NUM_GENERATIONS):
 for curr_iter in range(NUM_GENERATIONS):
-    
     # create a new population
     population = population.build_a_new_generation(CULLING_PERC= CULLING_PERC, ELITE_PERC = ELITE_PERC, M_RATE=MUTATION_PROB)
     
@@ -56,7 +56,7 @@ for curr_iter in range(NUM_GENERATIONS):
     
     # print stats for every 50th population
     if curr_iter % 50 == 0:
-        print('Iteration [{}] of [{}] ({:.2f}%) -- Best solution: cost = [{:.2f}] -- Population size [{}]'.format(curr_iter, NUM_GENERATIONS, curr_iter * 100 / MAX_ITERATIONS, best_fitness, len(population)))
+        print('Iteration [{}] of [{}] ({:.2f}%) -- Best solution: cost = [{:.2f}] -- Population size [{}]'.format(curr_iter, NUM_GENERATIONS, curr_iter * 100 / NUM_GENERATIONS, best_fitness, len(population)))
     
 
 best_solution = population.get_best_individual()
