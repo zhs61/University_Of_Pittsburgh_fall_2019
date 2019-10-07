@@ -29,9 +29,7 @@ public class Test {
 	private static Map<String, Double> improve = new HashMap<String, Double>();
 
 	private static String suffix = "en";
-	private static String regex = "";
 
-	private static int count = 0;
 	private static int charCount = 0;
 
 	// private static JTable table = new JTable();
@@ -59,7 +57,6 @@ public class Test {
 			String filename = "";
 			if (i == 0) {
 				filename = "training.en";
-				regex = "[^\\w.,;:!?]";
 				suffix = "en";
 			} else if (i == 1) {
 				filename = "training.es";
