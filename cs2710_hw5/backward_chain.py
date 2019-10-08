@@ -15,6 +15,7 @@ def backwardchain(KB, theorem):
                     return True
         return False
     return True
+
 if __name__ == '__main__':
     print("Theorem 1:")
     print(backwardchain(KBase, theorem1))
