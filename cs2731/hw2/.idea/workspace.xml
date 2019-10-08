@@ -2,19 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42bd9b6d-d294-43a1-b85f-f01df4208f29" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../PyCharmProjects/HW3_CS2710/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../PyCharmProjects/HW3_CS2710/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../PyCharmProjects/HW3_CS2710/GA.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../PyCharmProjects/HW3_CS2710/GA.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../PyCharmProjects/HW3_CS2710/SA.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../PyCharmProjects/HW3_CS2710/SA.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../PyCharmProjects/HW3_CS2710/fig/evolution_N_pop_500_p_mut_00_p_cull_05_p_elite_05.png" beforeDir="false" afterPath="$PROJECT_DIR$/../../PyCharmProjects/HW3_CS2710/fig/evolution_N_pop_500_p_mut_00_p_cull_05_p_elite_05.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../PyCharmProjects/HW3_CS2710/fig/evolution_N_pop_500_p_mut_05_p_cull_05_p_elite_05.png" beforeDir="false" afterPath="$PROJECT_DIR$/../../PyCharmProjects/HW3_CS2710/fig/evolution_N_pop_500_p_mut_05_p_cull_05_p_elite_05.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../PyCharmProjects/HW3_CS2710/mySA.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../PyCharmProjects/HW3_CS2710/mySA.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../cs2710_hw5/.idea/cs2710_hw5.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../../cs2710_hw5/.idea/cs2710_hw5.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../cs2710_hw5/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../cs2710_hw5/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../cs2710_hw5/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../cs2710_hw5/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hw2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hw2.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pcfg.txt" beforeDir="false" afterPath="$PROJECT_DIR$/pcfg.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prob-cky1.py" beforeDir="false" afterPath="$PROJECT_DIR$/prob-cky1.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -136,8 +126,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/prob-cky1.py</url>
-          <line>190</line>
-          <option name="timeStamp" value="42" />
+          <line>236</line>
+          <option name="timeStamp" value="46" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

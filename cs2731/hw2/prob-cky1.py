@@ -82,16 +82,16 @@ def cky(words, grammar):
         for key in lexicon:
             value = lexicon.get(key)
             for v in value:
-                if v[1] == word:
-                    table[j-1][j][key] = v[0]
+                if v[0] == word:
+                    table[j-1][j][key] = v[1]
         for i in range(j-2, -1, -1):
             for k in range(i+1, j):
                 for g_key in grammar:
                     rule = grammar.get(g_key)
                     for r in rule:
                         if len(r) == 3:
-                            if (r[1] in table[i][k]) and (r[2] in table[k][j]):
-                                if table[i][k][r[1]] > 0 and table[k][j][r[2]] > 0:
+                            if (r[0] in table[i][k]) and (r[1] in table[k][j]):
+                                if table[i][k][r[0]] > 0 and table[k][j][r[1]] > 0:
                                     print(r)
 
 
@@ -126,6 +126,7 @@ def get_grammar():
         line.append(prob)
         original_grammar[key] = value
     return original_grammar
+
 
 def binarization_grammar():
     # convert teminals in rule to dummy non terminals
@@ -172,8 +173,11 @@ def binarization_grammar():
     total_list = []
     for key in modified_grammar:
         value = modified_grammar.get(key)
-        for v in value:
+        # for v in value:
+        for h in range(len(value)):
+            v = value[h]
             if len(v) > 3:
+                vt = []
                 sub_list = []
                 for i in range(len(v)-1):
                     sub_list.append(v[i])
@@ -182,18 +186,21 @@ def binarization_grammar():
                     if len(sub_list) == 2:
                         unique_id = 'X' + str(num)
                         num += 1
+                        g = [unique_id]
+                        vt = vt + g
                         t = [key, unique_id, sub_list[0], sub_list[1]]
                         total_list.append(t)
                         sub_list = []
-                    # elif i == len(v)-2:
-                    #     total_list.append(sub_list)
-    for l in total_list:
-        modified_grammar[l[1]] = l[2:]
-        modified_grammar[l[0]].remove(l[2])
-        modified_grammar[l[0]].remove(l[3])
+                    elif i == len(v)-2:
+                        vt = vt + sub_list
+                value[h] = vt
 
-        # elif i == (len(value) - 1):  # when we get to the last element, add it to rightside
 
+    for u in total_list:
+        modified_grammar[u[1]] = u[2:]
+
+    for key in modified_grammar:
+        print(key, "->",modified_grammar[key])
 
 
 
@@ -220,9 +227,11 @@ if __name__ == '__main__':
         modified_grammar = get_grammar()
         get_lexicon()
         binarization_grammar()
+
         # binarization()
 
         words = sys.argv[2]
-        words = words[0].lower() + words[1:]
+        words = words.lower()
+        # print(words)
         words = words.split(" ")
-        #cky(words, modified_grammar)
+        cky(words, modified_grammar)
