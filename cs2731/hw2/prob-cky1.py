@@ -188,19 +188,18 @@ def binarization_grammar():
                         num += 1
                         g = [unique_id]
                         vt = vt + g
-                        t = [key, unique_id, sub_list[0], sub_list[1]]
+                        t = [key, unique_id, sub_list[0], sub_list[1]] + ['1.00']
                         total_list.append(t)
                         sub_list = []
                     elif i == len(v)-2:
-                        vt = vt + sub_list
+                        vt = vt + sub_list + [v[i+1]]
                 value[h] = vt
 
 
     for u in total_list:
         modified_grammar[u[1]] = u[2:]
 
-    for key in modified_grammar:
-        print(key, "->",modified_grammar[key])
+
 
 
 
@@ -227,6 +226,9 @@ if __name__ == '__main__':
         modified_grammar = get_grammar()
         get_lexicon()
         binarization_grammar()
+
+        for key in modified_grammar:
+            print(key, "->", modified_grammar[key])
 
         # binarization()
 
