@@ -13,7 +13,7 @@ def sim_anneal(TSP_problem, no_of_steps, init_temperature ):
         if (no_of_accepted > 20000) or (i-no_of_accepted > 20000):
             break
         no_steps+=1
-        temperature = init_temperature * pow(0.9,i)
+        temperature = init_temperature * pow(0.99, i)
         if temperature==0:
             continue
         newTour = TSP_problem.permute_tour(tour)

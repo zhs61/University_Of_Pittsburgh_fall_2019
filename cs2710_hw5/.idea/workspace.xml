@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="797732b6-d8ca-4963-a0d7-4ebcd3500cab" name="Default Changelist" comment="" />
+    <list default="true" id="797732b6-d8ca-4963-a0d7-4ebcd3500cab" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../PyCharmProjects/HW3_CS2710/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../PyCharmProjects/HW3_CS2710/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PyCharmProjects/HW3_CS2710/GA.py" beforeDir="false" afterPath="$PROJECT_DIR$/../PyCharmProjects/HW3_CS2710/GA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PyCharmProjects/HW3_CS2710/SA.py" beforeDir="false" afterPath="$PROJECT_DIR$/../PyCharmProjects/HW3_CS2710/SA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PyCharmProjects/HW3_CS2710/fig/evolution_N_pop_500_p_mut_00_p_cull_05_p_elite_05.png" beforeDir="false" afterPath="$PROJECT_DIR$/../PyCharmProjects/HW3_CS2710/fig/evolution_N_pop_500_p_mut_00_p_cull_05_p_elite_05.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PyCharmProjects/HW3_CS2710/fig/evolution_N_pop_500_p_mut_05_p_cull_05_p_elite_05.png" beforeDir="false" afterPath="$PROJECT_DIR$/../PyCharmProjects/HW3_CS2710/fig/evolution_N_pop_500_p_mut_05_p_cull_05_p_elite_05.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PyCharmProjects/HW3_CS2710/mySA.py" beforeDir="false" afterPath="$PROJECT_DIR$/../PyCharmProjects/HW3_CS2710/mySA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/cs2710_hw5.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cs2710_hw5.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../cs2731/hw2/.idea/hw2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../cs2731/hw2/.idea/hw2.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../cs2731/hw2/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../cs2731/hw2/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../cs2731/hw2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../cs2731/hw2/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../cs2731/hw2/pcfg.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../cs2731/hw2/pcfg.txt" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +35,7 @@
   <component name="ProjectId" id="1RtgTwJPNy87cIPOySfMR5PHkWL" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -41,7 +56,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.backward_chain">
+  <component name="RunManager" selected="Python.forward_chain">
     <configuration name="Propositional_KB_agent" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="cs2710_hw5" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -107,8 +122,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.backward_chain" />
         <item itemvalue="Python.forward_chain" />
+        <item itemvalue="Python.backward_chain" />
         <item itemvalue="Python.Propositional_KB_agent" />
       </list>
     </recent_temporary>
@@ -131,21 +146,12 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/forward_chain.py</url>
-          <line>4</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

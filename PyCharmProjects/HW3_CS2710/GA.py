@@ -15,8 +15,8 @@ import os
 #parameters
 N_POP = 500 # population size
 NUM_GENERATIONS = 500 #number of generations to run
-MUTATION_PROB = 0.05 #probability of an individual being mutated
-CULLING_PERC = 0.25 #percentage of the least fit individuals to be removed
+MUTATION_PROB = 0.00 #probability of an individual being mutated
+CULLING_PERC = 0.05 #percentage of the least fit individuals to be removed
 ELITE_PERC = 0.05 #proportion of best individuals to carry over from one generation to the next
 OUT_DIR = 'fig/' #directory where to place the plots (it will be automatically created if not existent)
 

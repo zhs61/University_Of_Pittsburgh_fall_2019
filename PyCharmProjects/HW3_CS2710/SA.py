@@ -32,4 +32,4 @@ def sim_anneal(TSP_problem, no_of_steps, init_temperature ):
     print("Final tour: ", tour, energy)
 
 if __name__ == '__main__':
-    sim_anneal(TSP_Problem(Standard_Cities),500000,100)
+    sim_anneal(TSP_Problem(Standard_Cities),100000,200)
