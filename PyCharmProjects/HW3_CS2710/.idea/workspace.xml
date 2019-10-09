@@ -2,32 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="53423039-c7f5-46a3-a46d-db2054347ef2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/mySA.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/PP_Result" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/PP_Result" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/backoff_trigram_model.de" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/backoff_trigram_model.de" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/backoff_trigram_model.en" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/backoff_trigram_model.en" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/backoff_trigram_model.es" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/backoff_trigram_model.es" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/bigram_model.de" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/bigram_model.de" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/bigram_model.en" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/bigram_model.en" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/bigram_model.es" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/bigram_model.es" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/bin/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/interpolation_trigram_model.de" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/interpolation_trigram_model.de" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/interpolation_trigram_model.en" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/interpolation_trigram_model.en" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/interpolation_trigram_model.es" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/interpolation_trigram_model.es" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/laplace_trigram_model.de" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/laplace_trigram_model.de" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/laplace_trigram_model.en" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/laplace_trigram_model.en" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/laplace_trigram_model.es" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/laplace_trigram_model.es" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/src/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/src/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/test_model.en" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/test_model.en" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/trigram_model.de" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/trigram_model.de" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/trigram_model.en" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/trigram_model.en" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/trigram_model.es" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/trigram_model.es" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/unigram_model.de" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/unigram_model.de" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/unigram_model.en" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/unigram_model.en" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../HW1_CS2731/unigram_model.es" beforeDir="false" afterPath="$PROJECT_DIR$/../../HW1_CS2731/unigram_model.es" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GA.py" beforeDir="false" afterPath="$PROJECT_DIR$/GA.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SA.py" beforeDir="false" afterPath="$PROJECT_DIR$/SA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fig/evolution_N_pop_500_p_mut_00_p_cull_05_p_elite_05.png" beforeDir="false" afterPath="$PROJECT_DIR$/fig/evolution_N_pop_500_p_mut_00_p_cull_05_p_elite_05.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fig/evolution_N_pop_500_p_mut_05_p_cull_05_p_elite_05.png" beforeDir="false" afterPath="$PROJECT_DIR$/fig/evolution_N_pop_500_p_mut_05_p_cull_05_p_elite_05.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mySA.py" beforeDir="false" afterPath="$PROJECT_DIR$/mySA.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -69,7 +49,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.GA">
+  <component name="RunManager" selected="Python.SA">
     <configuration name="GA" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="HW3_CS2710" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -156,9 +136,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.GA" />
-        <item itemvalue="Python.mySA" />
         <item itemvalue="Python.SA" />
+        <item itemvalue="Python.mySA" />
+        <item itemvalue="Python.GA" />
         <item itemvalue="Python.TSP" />
       </list>
     </recent_temporary>
@@ -181,7 +161,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

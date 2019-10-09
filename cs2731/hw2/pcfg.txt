@@ -17,7 +17,7 @@ Grammar
 0.15 VP->VP PP
 1.00 PP->Preposition NP
 Lexicon
-0.10 Det->that 
+0.10 Det->that
 0.30 Det->a
 0.60 Det->the
 0.10 Noun->book

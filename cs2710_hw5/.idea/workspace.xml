@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="797732b6-d8ca-4963-a0d7-4ebcd3500cab" name="Default Changelist" comment="" />
+    <list default="true" id="797732b6-d8ca-4963-a0d7-4ebcd3500cab" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../cs2731/hw2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../cs2731/hw2/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../cs2731/hw2/prob-cky1.py" beforeDir="false" afterPath="$PROJECT_DIR$/../cs2731/hw2/prob-cky1.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +24,7 @@
   <component name="ProjectId" id="1RtgTwJPNy87cIPOySfMR5PHkWL" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../cs2731/hw2" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -41,7 +45,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.backward_chain">
+  <component name="RunManager" selected="Python.forward_chain">
     <configuration name="Propositional_KB_agent" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="cs2710_hw5" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -70,9 +74,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\szxsa\venv\HW3_CS2710\Scripts\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/backward_chain.py" />
@@ -91,9 +95,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\szxsa\venv\HW3_CS2710\Scripts\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/forward_chain.py" />
@@ -107,8 +111,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.backward_chain" />
         <item itemvalue="Python.forward_chain" />
+        <item itemvalue="Python.backward_chain" />
         <item itemvalue="Python.Propositional_KB_agent" />
       </list>
     </recent_temporary>
@@ -131,21 +135,12 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/forward_chain.py</url>
-          <line>4</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

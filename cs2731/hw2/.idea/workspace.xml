@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="42bd9b6d-d294-43a1-b85f-f01df4208f29" name="Default Changelist" comment="" />
+    <list default="true" id="42bd9b6d-d294-43a1-b85f-f01df4208f29" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../../cs2710_hw5/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../cs2710_hw5/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prob-cky1.py" beforeDir="false" afterPath="$PROJECT_DIR$/prob-cky1.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +46,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.prob-cky1">
     <configuration name="prob-cky" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="hw2" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -64,8 +68,34 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="prob-cky1" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="hw2" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/prob-cky1.py" />
+      <option name="PARAMETERS" value="pcfg.txt &quot;Book the flight through Houston&quot; &quot;the gold-standard s-expression&quot;" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.prob-cky" />
+      <item itemvalue="Python.prob-cky1" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.prob-cky1" />
         <item itemvalue="Python.prob-cky" />
       </list>
     </recent_temporary>
@@ -96,4 +126,18 @@
       </map>
     </option>
   </component>
+<<<<<<< HEAD
+=======
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/prob-cky1.py</url>
+          <line>238</line>
+          <option name="timeStamp" value="46" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+>>>>>>> 025106db8873dd1013080c00dde14b24ca08c349
 </project>
