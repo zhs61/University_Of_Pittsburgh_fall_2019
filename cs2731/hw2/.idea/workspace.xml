@@ -29,6 +29,11 @@
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\szxsa\Desktop\University_Of_Pittsburgh\cs2731\hw2" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -121,6 +126,8 @@
       </map>
     </option>
   </component>
+<<<<<<< HEAD
+=======
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -132,4 +139,5 @@
       </breakpoints>
     </breakpoint-manager>
   </component>
+>>>>>>> 025106db8873dd1013080c00dde14b24ca08c349
 </project>

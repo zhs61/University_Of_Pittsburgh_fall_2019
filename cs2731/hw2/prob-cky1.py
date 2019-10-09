@@ -1,5 +1,14 @@
 import sys
 
+
+class Node:
+    def __init__(self, key, left, right, prob, leaf, word):
+        self.key = key
+        self.left = left
+        self.right = right
+        self.prob = prob
+        self.leaf = leaf
+        self.word = word
 """
     Note: all probability store in the first element of the right side list
 """
@@ -8,6 +17,7 @@ l = []
 grammar = {}
 modified_grammar = {}
 lexicon = {}
+binary = []
 
 # read in file line by line, skip grammar and lexicon, store in list
 def readFile(filename):
@@ -74,25 +84,79 @@ def binarization():
         grammar[key] = exist
 
 
-def cky(words, grammar):
-    n = len(words)
-    table = {i: {j: {} for j in range(n+1)} for i in range(n+1)}
-    for j in range(1, len(words)+1):
-        word = words[j-1]
+def cky(words):
+    table = [[[] for i in range(len(words))] for j in range(len(words))]
+    rtable = [[[] for i in range(len(words))] for j in range(len(words))]
+    for i in range(len(words)):
+        word = words[i]
         for key in lexicon:
-            value = lexicon.get(key)
-            for v in value:
+            for v in lexicon.get(key):
                 if v[0] == word:
-                    table[j-1][j][key] = v[1]
-        for i in range(j-2, -1, -1):
-            for k in range(i+1, j):
-                for g_key in grammar:
-                    rule = grammar.get(g_key)
-                    for r in rule:
+                    tu = [key, v[1]]
+                    n = Node(key, None, None, float(v[1]), True, word)
+                    rtable[i][i].append(n)
+                    table[i][i].append(tu)
+        for key in modified_grammar:
+            for v in modified_grammar.get(key):
+                if isinstance(v[0],list):
+                    for ele in v:
+                        for e in ele:
+                            if e[0] == word:
+                                tu = [key, e[1]]
+                                n = Node(key, None, None, float(e[1]), True, word)
+                                rtable[i][i].append(n)
+                                table[i][i].append(tu)
+        for j in reversed(range(0, i)):
+            for k in range(j , i):
+                for g_key in modified_grammar:
+                    for r in modified_grammar.get(g_key):
                         if len(r) == 3:
-                            if (r[0] in table[i][k]) and (r[1] in table[k][j]):
-                                if table[i][k][r[0]] > 0 and table[k][j][r[1]] > 0:
-                                    print(r)
+                            B = r[0]
+                            C = r[1]
+
+                            # compare the factors from the left  with the factor from the bottom
+                            # see if there is any conbaantion could satisfy new rule
+                            for r1 in table[j][k]:
+                                r1 = r1[0]
+                                for r2 in table[k+1][i]:
+                                    r2 = r2[0]
+                                    if B == r1 and C == r2:
+                                        tu = [g_key, r[2]]
+                                        table[j][i].append(tu)
+                            for left_child in rtable[j][k]:
+                                for right_child in rtable[k+1][i]:
+                                    if left_child.key == B and right_child.key == C:
+                                        n = Node(g_key, left_child, right_child, left_child.prob * right_child.prob * float(r[2]), False, "")
+                                        rtable[j][i].append(n)
+
+    return rtable
+    # table = {i: {j: {} for j in range(n+1)} for i in range(n+1)}
+    # for j in range(1, len(words)+1):
+    #     word = words[j-1]
+    #     for key in lexicon:
+    #         value = lexicon.get(key)
+    #         for v in value:
+    #             if v[0] == word:
+    #                 table[j-1][j][key] = v[1]
+    #     for i in range(j-2, -1, -1):
+    #         for k in range(i+1, j):
+    #             for g_key in grammar:
+    #                 rule = grammar.get(g_key)
+    #                 for r in rule:
+    #                     # if (table[i][k][r[0]] > 0 and table[k][j][r[1]] > 0) or (table[i][k][r[1]] > 0 and table[k][j][r[0]] > 0):
+    #                     #     print(r)
+    #                     if len(r[0]) == 2:
+    #                         B = r[0][0]
+    #                         C = r[0][1]
+    #                         for r1 in table[i][k]:
+    #                             for r2 in table[k+1][j]:
+    #                                 if B == r1 and C == r2:
+    #                                     table[i][j].append(g_key)
+    #
+    #                         for r1 in table[i][k]:
+    #                             for r2 in table[k+1][j]:
+    #                                 if B == r1 and C == r2:
+    #                                     table[i][j].append(g_key)
 
 
 # read the lexicon from l
@@ -105,6 +169,7 @@ def get_lexicon():
         the_lex = the_lex.split("->")
         key = the_lex[0]
         value = the_lex[1]
+        value = value.lower()
         right_side.append(value)
         right_side.append(prob)
         exist = lexicon.get(key, [])
@@ -145,6 +210,7 @@ def binarization_grammar():
         modified_grammar[i[0]] = [i[1], i[2]]
 
     terms = []
+    p=0.0
     # convert Unit production
     for key in modified_grammar:
         record = []
@@ -152,10 +218,22 @@ def binarization_grammar():
         for v in value:
             if len(v) == 2:
                 t = []
+                s = []
                 t.append(key)
                 single_non_terminal = v[0]
-                single_non_terminal = helper_find_unit(single_non_terminal)
+                p = float(v[1])
+                if single_non_terminal in modified_grammar:
+                    secondaryvalue = modified_grammar[single_non_terminal]
+                    for se in secondaryvalue:
+                        if len(se) > 2:
+                            s.append(key)
+                            s = s + (se)
+                            terms.append(s)
+                            s = []
+                single_non_terminal, po = helper_find_unit(single_non_terminal, p)
+                p *= po
                 if single_non_terminal in lexicon:
+                    terminal = lexicon.get(single_non_terminal)
                     t.append(lexicon.get(single_non_terminal))
                 terms.append(t)
                 record.append(v)
@@ -184,36 +262,58 @@ def binarization_grammar():
                     # when ever we have two elements in sub_list,
                     # we can add it to the right side with a unique name
                     if len(sub_list) == 2:
-                        unique_id = 'X' + str(num)
-                        num += 1
-                        g = [unique_id]
-                        vt = vt + g
-                        t = [key, unique_id, sub_list[0], sub_list[1]] + ['1.00']
-                        total_list.append(t)
+                        if sub_list in binary:
+                            e = binary.index(sub_list) + 1
+                            vt = vt + [("X" + str(e))]
+                        else:
+                            binary.append(sub_list)
+                            unique_id = 'X' + str(num)
+                            num += 1
+                            g = [unique_id]
+                            vt = vt + g
+                            t = [key, unique_id, sub_list[0], sub_list[1]] + ['1.00']
+                            total_list.append(t)
                         sub_list = []
                     elif i == len(v)-2:
                         vt = vt + sub_list + [v[i+1]]
                 value[h] = vt
-
-
     for u in total_list:
-        modified_grammar[u[1]] = u[2:]
+        modified_grammar[u[1]] = [u[2:]]
 
 
-
-
-
-def helper_find_unit(single_non_terminal):
-
+def helper_find_unit(single_non_terminal, po):
     if single_non_terminal in modified_grammar:
         value = modified_grammar.get(single_non_terminal)
         for v in value:
             if len(v) == 2:
                 single_non_terminal = v[0]
-                helper_find_unit(single_non_terminal)
-        return single_non_terminal
-    return single_non_terminal
+                po *= float(v[1])
+                helper_find_unit(single_non_terminal, po)
+        return single_non_terminal, po
+    return single_non_terminal, po
+def help_find_mid(node):
+    for key in lexicon:
+        for value in lexicon.get(key):
+            if node.word in value:
+                if node.key == key:
+                    return ''
+                else:
+                    print()
 
+
+def printTree(node):
+    id = ''
+    if node.leaf:
+        help_find_mid(node)
+        return '[' + node.key + ' ' + node.word + ']'
+    else:
+        left = ''
+        right = ''
+        if node.left != None:
+            left = printTree(node.left)
+        if node.right != None:
+            right = printTree(node.right)
+        return '[' + node.key + ' ' + left + ' ' + right + ']'
 
 
 if __name__ == '__main__':
@@ -227,8 +327,8 @@ if __name__ == '__main__':
         get_lexicon()
         binarization_grammar()
 
-        for key in modified_grammar:
-            print(key, "->", modified_grammar[key])
+        # for key in modified_grammar:
+        #     print(key, "->", modified_grammar[key])
 
         # binarization()
 
@@ -236,4 +336,8 @@ if __name__ == '__main__':
         words = words.lower()
         # print(words)
         words = words.split(" ")
-        cky(words, modified_grammar)
+        rtable = cky(words)
+        for s in rtable[0][len(words)-1]:
+            if s.key == 'S':
+                print(s.prob)
+                print(printTree(s))
