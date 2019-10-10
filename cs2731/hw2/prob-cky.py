@@ -1,4 +1,5 @@
 import sys
+from nltk.tree import Tree
 
 
 class Node:
@@ -22,6 +23,7 @@ lexicon = {}
 binary = []
 jumped_prob = []
 pass_count = 0
+
 
 # read in file line by line, skip grammar and lexicon, store in list
 def readFile(filename):
@@ -52,7 +54,7 @@ def find_correct_prob(key, word):
 
 
 def cky(words):
-    table = [[[] for i in range(len(words))] for j in range(len(words))]
+    # table = [[[] for i in range(len(words))] for j in range(len(words))]
     rtable = [[[] for i in range(len(words))] for j in range(len(words))]
     for i in range(len(words)):
         word = words[i]
@@ -62,7 +64,7 @@ def cky(words):
                     tu = [key, v[1]]
                     n = Node(key, None, None, float(v[1]), True, word)
                     rtable[i][i].append(n)
-                    table[i][i].append(tu)
+                    # table[i][i].append(tu)
         for key in modified_grammar:
             for v in modified_grammar.get(key):
                 if isinstance(v[0], list):
@@ -73,7 +75,7 @@ def cky(words):
                                 pro = find_correct_prob(key, word)
                                 n = Node(key, None, None, float(pro), True, word)
                                 rtable[i][i].append(n)
-                                table[i][i].append(tu)
+                                # table[i][i].append(tu)
         for j in reversed(range(0, i)):
             for k in range(j, i):
                 for g_key in modified_grammar:
@@ -81,15 +83,16 @@ def cky(words):
                         if len(r) == 3:
                             B = r[0]
                             C = r[1]
+
                             # compare the factors from the left  with the factor from the bottom
                             # see if there is any conbaantion could satisfy new rule
-                            for r1 in table[j][k]:
-                                r1 = r1[0]
-                                for r2 in table[k + 1][i]:
-                                    r2 = r2[0]
-                                    if B == r1 and C == r2:
-                                        tu = [g_key, r[2]]
-                                        table[j][i].append(tu)
+                            # for r1 in table[j][k]:
+                            #     r1 = r1[0]
+                            #     for r2 in table[k + 1][i]:
+                            #         r2 = r2[0]
+                            #         if B == r1 and C == r2:
+                            #             tu = [g_key, r[2]]
+                            #             table[j][i].append(tu)
                             for left_child in rtable[j][k]:
                                 for right_child in rtable[k + 1][i]:
                                     if left_child.key == B and right_child.key == C:
@@ -278,16 +281,35 @@ def real_grammar(node):
     return True
 
 
+def convert_X(x, node):
+    if x == 'left':
+        return [node.left.left.key, node.left.right.key]
+    else:
+        return [node.right.left.key, node.right.right.key]
+
 
 def find_mid_2(node):
     p = 0
+    temp = []
     for key in original_grammar:
         for v in original_grammar.get(key):
-            temp = [node.left.key, node.right.key]
-            if temp[0] == v[0] and temp[1] == v[1]:
+            if node.left.key.startswith('X') or node.right.key.startswith('X'):
+                if node.left.key.startswith('X'):
+                    temp += convert_X('left', node)
+                else:
+                    temp += [node.left.key]
+                if node.right.key.startswith('X'):
+                    temp += convert_X('right', node)
+                else:
+                    temp += [node.right.key]
+            else:
+                temp = [node.left.key, node.right.key]
+            if temp == v[:len(v) - 1]:
                 p += 1
                 return '[' + key + ' ', p
+            temp = []
     return '', 0
+
 
 def printTree(node):
     l1 = ''
@@ -305,10 +327,52 @@ def printTree(node):
             right = printTree(node.right)
         if node.key.startswith('X'):
             return ' ' + left + ' ' + right
-        line =  '[' + node.key + ' ' + l1 + left + ' ' + right + ']'
+        line = '[' + node.key + ' ' + l1 + left + ' ' + right + ']'
         for i in range(pass_c):
             line += ']'
         return line
+
+
+def gernateTree(sentence):
+    sentence = sentence.replace('[', '(')
+    sentence = sentence.replace(']', ')')
+    return Tree.fromstring(sentence.lower())
+
+
+def getCount(sentence):
+    gold_standard_count = []
+    for s in sentence.subtrees():
+        terminal = False
+        for key in lexicon:
+            if key.lower() == s.label():
+                terminal = True
+        if not terminal:
+            gold_standard_count.append([s.label().upper(), s.leaves()])
+    return gold_standard_count
+
+
+def calculate_recall(gs_count, ss_count):
+    correct_count = 0
+    for c1 in ss_count:
+        for c2 in gs_count:
+            if c1[0] == c2[0]:
+                v1 = c1[1]
+                v2 = c2[1]
+                if v1 == v2:
+                    correct_count += 1
+    return correct_count / len(gs_count)
+
+
+def calculate_percision(gs_count, ss_count):
+    correct_count = 0
+    for c1 in ss_count:
+        for c2 in gs_count:
+            if c1[0] == c2[0]:
+                v1 = c1[1]
+                v2 = c2[1]
+                if v1 == v2:
+                    correct_count += 1
+    return correct_count / len(ss_count)
 
 
 if __name__ == '__main__':
@@ -329,6 +393,8 @@ if __name__ == '__main__':
         rtable = cky(words)
         result = []
 
+        gold_standard = gernateTree(sys.argv[3])
+        gs_count = getCount(gold_standard)
         for s in rtable[0][len(words) - 1]:
             if s.key == 'S':
                 result.append([printTree(s), s.prob])
@@ -340,3 +406,7 @@ if __name__ == '__main__':
             for r in result:
                 print(r[0])
                 print(r[1])
+                sentence_standard = gernateTree(r[0].lower())
+                ss_count = getCount(sentence_standard)
+                print('recall: ', calculate_recall(gs_count, ss_count))
+                print('percision: ', calculate_percision(gs_count, ss_count))
