@@ -21,6 +21,7 @@ modified_grammar = {}
 lexicon = {}
 binary = []
 jumped_prob = []
+pass_count = 0
 
 # read in file line by line, skip grammar and lexicon, store in list
 def readFile(filename):
@@ -64,7 +65,7 @@ def cky(words):
                     table[i][i].append(tu)
         for key in modified_grammar:
             for v in modified_grammar.get(key):
-                if isinstance(v[0],list):
+                if isinstance(v[0], list):
                     for ele in v:
                         for e in ele:
                             if e[0] == word:
@@ -74,7 +75,7 @@ def cky(words):
                                 rtable[i][i].append(n)
                                 table[i][i].append(tu)
         for j in reversed(range(0, i)):
-            for k in range(j , i):
+            for k in range(j, i):
                 for g_key in modified_grammar:
                     for r in modified_grammar.get(g_key):
                         if len(r) == 3:
@@ -84,15 +85,16 @@ def cky(words):
                             # see if there is any conbaantion could satisfy new rule
                             for r1 in table[j][k]:
                                 r1 = r1[0]
-                                for r2 in table[k+1][i]:
+                                for r2 in table[k + 1][i]:
                                     r2 = r2[0]
                                     if B == r1 and C == r2:
                                         tu = [g_key, r[2]]
                                         table[j][i].append(tu)
                             for left_child in rtable[j][k]:
-                                for right_child in rtable[k+1][i]:
+                                for right_child in rtable[k + 1][i]:
                                     if left_child.key == B and right_child.key == C:
-                                        n = Node(g_key, left_child, right_child, left_child.prob * right_child.prob * float(r[2]), False, "")
+                                        n = Node(g_key, left_child, right_child,
+                                                 left_child.prob * right_child.prob * float(r[2]), False, "")
                                         rtable[j][i].append(n)
     return rtable
 
@@ -117,7 +119,7 @@ def get_lexicon():
 
 # ==============================================================
 def get_grammar():
-    original= {}
+    original = {}
     for line in g:
         line = line.split(" ", 1)
         prob = line[0]
@@ -132,13 +134,16 @@ def get_grammar():
     return original
 
 
+removed_key = []  # store the removed key
+
+
 def binarization_grammar():
     # convert teminals in rule to dummy non terminals
     temp = []
     for key in modified_grammar:
         value = modified_grammar.get(key)
         for v in value:
-            for element in v[:len(v)-1]:
+            for element in v[:len(v) - 1]:
                 for word in lexicon:
                     l = lexicon.get(word)
                     for i in l:
@@ -149,17 +154,21 @@ def binarization_grammar():
         modified_grammar[i[0]] = [i[1], i[2]]
 
     terms = []
-    p=0.0
+    p = 0.0
     # convert Unit production
     for key in modified_grammar:
         record = []
+
         value = modified_grammar.get(key)
         for v in value:
             if len(v) == 2:
                 t = []
                 s = []
+                removed_key_ele = []
                 t.append(key)
+                removed_key_ele.append(key)
                 single_non_terminal = v[0]
+                removed_key_ele.append(single_non_terminal)
                 p = float(v[1])
                 if single_non_terminal in modified_grammar:
                     secondaryvalue = modified_grammar[single_non_terminal]
@@ -169,14 +178,15 @@ def binarization_grammar():
                             s = s + (se)
                             terms.append(s)
                             s = []
-                single_non_terminal, po = helper_find_unit(single_non_terminal, 1.0)
+                single_non_terminal, po = helper_find_unit(single_non_terminal, 1.0, removed_key_ele)
                 p *= po
                 if single_non_terminal in lexicon:
                     for voi in lexicon.get(single_non_terminal):
-                        x = [key,voi[0], p*float(voi[1])]
+                        x = [key, voi[0], p * float(voi[1])]
                         jumped_prob.append(x)
                     t.append(lexicon.get(single_non_terminal))
                 terms.append(t)
+                removed_key.append(removed_key_ele)
                 record.append(v)
         for v in record:
             value.remove(v)
@@ -198,7 +208,7 @@ def binarization_grammar():
             if len(v) > 3:
                 vt = []
                 sub_list = []
-                for i in range(len(v)-1):
+                for i in range(len(v) - 1):
                     sub_list.append(v[i])
                     # when ever we have two elements in sub_list,
                     # we can add it to the right side with a unique name
@@ -215,22 +225,25 @@ def binarization_grammar():
                             t = [key, unique_id, sub_list[0], sub_list[1]] + ['1.00']
                             total_list.append(t)
                         sub_list = []
-                    elif i == len(v)-2:
-                        vt = vt + sub_list + [v[i+1]]
+                    elif i == len(v) - 2:
+                        vt = vt + sub_list + [v[i + 1]]
                 value[h] = vt
     for u in total_list:
         modified_grammar[u[1]] = [u[2:]]
 
 
 single_prob = []
-def helper_find_unit(single_non_terminal, po):
+
+
+def helper_find_unit(single_non_terminal, po, removed_key_ele):
     if single_non_terminal in modified_grammar:
         value = modified_grammar.get(single_non_terminal)
         for v in value:
             if len(v) == 2:
                 single_non_terminal = v[0]
+                removed_key_ele.append(single_non_terminal)
                 po *= float(v[1])
-                helper_find_unit(single_non_terminal, po)
+                helper_find_unit(single_non_terminal, po, removed_key_ele)
                 single_prob.append(po)
         return single_non_terminal, po
     return single_non_terminal, po
@@ -249,12 +262,38 @@ def help_find_mid(node):
                             if len(v) == 2 and v[0] == key:
                                 line += '[' + v[0] + ' '
 
-    line +=  node.word + ']]'
+    line += node.word + ']]'
     return line
 
 
+def real_grammar(node):
+    exist = False
+    if node.key in original_grammar and node.left != None and node.right != None:
+        value = original_grammar.get(node.key)
+        for v in value:
+            temp = [node.left.key, node.right.key]
+            if temp[0] == v[0] and temp[1] == v[1]:
+                exist = True
+        return exist
+    return True
+
+
+
+def find_mid_2(node):
+    p = 0
+    for key in original_grammar:
+        for v in original_grammar.get(key):
+            temp = [node.left.key, node.right.key]
+            if temp[0] == v[0] and temp[1] == v[1]:
+                p += 1
+                return '[' + key + ' ', p
+    return '', 0
+
 def printTree(node):
-    id = ''
+    l1 = ''
+    pass_c = 0
+    if not real_grammar(node):
+        l1, pass_c = find_mid_2(node)
     if node.leaf:
         return help_find_mid(node)
     else:
@@ -266,14 +305,17 @@ def printTree(node):
             right = printTree(node.right)
         if node.key.startswith('X'):
             return ' ' + left + ' ' + right
-        return '[' + node.key + ' ' + left + ' ' + right + ']'
+        line =  '[' + node.key + ' ' + l1 + left + ' ' + right + ']'
+        for i in range(pass_c):
+            line += ']'
+        return line
 
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
         sys.exit('Wrong number of command line arguments.')
     else:
-        #read the grammar and lexicon
+        # read the grammar and lexicon
         readFile(sys.argv[1])
         original_grammar = get_grammar()
         modified_grammar = get_grammar()
@@ -286,18 +328,15 @@ if __name__ == '__main__':
         words = words.split(" ")
         rtable = cky(words)
         result = []
-        for s in rtable[0][len(words)-1]:
+
+        for s in rtable[0][len(words) - 1]:
             if s.key == 'S':
-                result.append([printTree(s),s.prob])
+                result.append([printTree(s), s.prob])
         max_prob = -1
         if len(result) == 0:
             print('Sentence rejected')
         else:
-            for r in result:
-                if r[1] > max_prob:
-                    max_prob = r[1]
             print('Sentence accepted')
             for r in result:
-                if r[1] == max_prob:
-                    print(r[0])
-                    print(r[1])
+                print(r[0])
+                print(r[1])
