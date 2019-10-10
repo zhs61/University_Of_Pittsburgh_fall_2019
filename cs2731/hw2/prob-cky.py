@@ -44,47 +44,10 @@ def readFile(filename):
             l.append(line)
 
 
-# check the text with the grammar, binarization if needed, store in grammar dict
-# def binarization():
-#     num = 1
-#     for line in g:
-#         line = line.split(" ", 1)
-#         right_side = []
-#         # line[0] is probability, line[1] is grammar
-#         prob = line[0]
-#         # first element of right side is the prob
-#         right_side.append(prob)
-#         the_grammar = line[1]
-#         the_grammar = the_grammar.split("->")
-#         # now the_grammar[0] is the key, and the second is next
-#         key = the_grammar[0]
-#         value = the_grammar[1].split(" ")
-#
-#         # now if there are 1 or 2 values on the left side, no needed to do binarization
-#         if len(value) == 1:
-#             right_side.append(value[0])
-#         elif len(value) == 2:
-#             right_side.append(value[0])
-#             right_side.append(value[1])
-#         else: #the rest of the values will have more than 2 elements, so do binarization
-#             # since the length is greater than 2, we need to form a sub list
-#             sub_list = []
-#             for i in range(len(value)):
-#                 sub_list.append(value[i])
-#                 # when ever we have two elements in sub_list,
-#                 # we can add it to the right side with a unique name
-#                 if len(sub_list) == 2:
-#                     unique_id = 'id_' + str(num)
-#                     num += 1
-#                     grammar[unique_id] = sub_list
-#                     right_side.append(unique_id)
-#                     sub_list = []
-#                 elif i == (len(value) - 1) : # when we get to the last element, add it to rightside
-#                     right_side.append(value[i])
-#         # now all the cases have been covered, next, store to the grammar dict
-#         exist = grammar.get(key, [])
-#         exist.append(right_side)
-#         grammar[key] = exist
+def find_correct_prob(key, word):
+    for j in jumped_prob:
+        if j[0] == key and j[1] == word:
+            return j[2]
 
 
 def cky(words):
@@ -106,7 +69,8 @@ def cky(words):
                         for e in ele:
                             if e[0] == word:
                                 tu = [key, e[1]]
-                                n = Node(key, None, None, float(e[1]), True, word)
+                                pro = find_correct_prob(key, word)
+                                n = Node(key, None, None, float(pro), True, word)
                                 rtable[i][i].append(n)
                                 table[i][i].append(tu)
         for j in reversed(range(0, i)):
@@ -116,7 +80,6 @@ def cky(words):
                         if len(r) == 3:
                             B = r[0]
                             C = r[1]
-
                             # compare the factors from the left  with the factor from the bottom
                             # see if there is any conbaantion could satisfy new rule
                             for r1 in table[j][k]:
@@ -209,6 +172,9 @@ def binarization_grammar():
                 single_non_terminal, po = helper_find_unit(single_non_terminal, 1.0)
                 p *= po
                 if single_non_terminal in lexicon:
+                    for voi in lexicon.get(single_non_terminal):
+                        x = [key,voi[0], p*float(voi[1])]
+                        jumped_prob.append(x)
                     t.append(lexicon.get(single_non_terminal))
                 terms.append(t)
                 record.append(v)
