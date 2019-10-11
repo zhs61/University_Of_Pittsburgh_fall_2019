@@ -1,5 +1,5 @@
 import sys
-from nltk.tree import Tree
+from nltk.tree import *
 
 
 class Node:
@@ -293,7 +293,7 @@ def find_mid_2(node):
     temp = []
     for key in original_grammar:
         for v in original_grammar.get(key):
-            if node.left.key.startswith('X') or node.right.key.startswith('X'):
+            if (node.left.key.startswith('X') or node.right.key.startswith('X')):
                 if node.left.key.startswith('X'):
                     temp += convert_X('left', node)
                 else:
@@ -306,7 +306,8 @@ def find_mid_2(node):
                 temp = [node.left.key, node.right.key]
             if temp == v[:len(v) - 1]:
                 p += 1
-                return '[' + key + ' ', p
+                if key != node.key:
+                    return '[' + key + ' ', p
             temp = []
     return '', 0
 
@@ -327,7 +328,7 @@ def printTree(node):
             right = printTree(node.right)
         if node.key.startswith('X'):
             return ' ' + left + ' ' + right
-        line = '[' + node.key + ' ' + l1 + left + ' ' + right + ']'
+        line = '[' + node.key + l1 + left + ' ' + right + ']'
         for i in range(pass_c):
             line += ']'
         return line
@@ -398,15 +399,19 @@ if __name__ == '__main__':
         for s in rtable[0][len(words) - 1]:
             if s.key == 'S':
                 result.append([printTree(s), s.prob])
-        max_prob = -1
+        total_prob = 1.0
         if len(result) == 0:
             print('Sentence rejected')
         else:
             print('Sentence accepted')
+            for r in result:
+                total_prob *= float(r[1])
+            print('Sentence Probability: ', total_prob)
             for r in result:
                 print(r[0])
                 print(r[1])
                 sentence_standard = gernateTree(r[0].lower())
                 ss_count = getCount(sentence_standard)
                 print('recall: ', calculate_recall(gs_count, ss_count))
-                print('percision: ', calculate_percision(gs_count, ss_count))
+                print('precision: ', calculate_percision(gs_count, ss_count))
+s

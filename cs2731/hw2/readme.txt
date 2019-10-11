@@ -6,6 +6,12 @@ Command line arguments:
     argv[2] = "Test sentence"
     argv[3] = "Goald stnadard s-esppression"
 
+Requirement:
+
+    from nltk.tree import *:
+
+    need to have nltk installed
+
 Binarization:
     Follow the instruction on the text book:
 
