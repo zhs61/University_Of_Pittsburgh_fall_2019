@@ -13,7 +13,7 @@ class Node:
 
 
 """
-    Note: all probability store in the first element of the right side list
+    Note: all probability store in the last element of the right side list
 """
 g = []
 l = []
@@ -54,45 +54,30 @@ def find_correct_prob(key, word):
 
 
 def cky(words):
-    # table = [[[] for i in range(len(words))] for j in range(len(words))]
     rtable = [[[] for i in range(len(words))] for j in range(len(words))]
     for i in range(len(words)):
         word = words[i]
         for key in lexicon:
             for v in lexicon.get(key):
                 if v[0] == word:
-                    tu = [key, v[1]]
                     n = Node(key, None, None, float(v[1]), True, word)
                     rtable[i][i].append(n)
-                    # table[i][i].append(tu)
         for key in modified_grammar:
             for v in modified_grammar.get(key):
                 if isinstance(v[0], list):
                     for ele in v:
                         for e in ele:
                             if e[0] == word:
-                                tu = [key, e[1]]
                                 pro = find_correct_prob(key, word)
                                 n = Node(key, None, None, float(pro), True, word)
                                 rtable[i][i].append(n)
-                                # table[i][i].append(tu)
-        for j in reversed(range(0, i)):
+        for j in range(i-1, -1, -1):
             for k in range(j, i):
                 for g_key in modified_grammar:
                     for r in modified_grammar.get(g_key):
                         if len(r) == 3:
                             B = r[0]
                             C = r[1]
-
-                            # compare the factors from the left  with the factor from the bottom
-                            # see if there is any conbaantion could satisfy new rule
-                            # for r1 in table[j][k]:
-                            #     r1 = r1[0]
-                            #     for r2 in table[k + 1][i]:
-                            #         r2 = r2[0]
-                            #         if B == r1 and C == r2:
-                            #             tu = [g_key, r[2]]
-                            #             table[j][i].append(tu)
                             for left_child in rtable[j][k]:
                                 for right_child in rtable[k + 1][i]:
                                     if left_child.key == B and right_child.key == C:
@@ -235,9 +220,6 @@ def binarization_grammar():
         modified_grammar[u[1]] = [u[2:]]
 
 
-single_prob = []
-
-
 def helper_find_unit(single_non_terminal, po, removed_key_ele):
     if single_non_terminal in modified_grammar:
         value = modified_grammar.get(single_non_terminal)
@@ -247,7 +229,6 @@ def helper_find_unit(single_non_terminal, po, removed_key_ele):
                 removed_key_ele.append(single_non_terminal)
                 po *= float(v[1])
                 helper_find_unit(single_non_terminal, po, removed_key_ele)
-                single_prob.append(po)
         return single_non_terminal, po
     return single_non_terminal, po
 
@@ -264,7 +245,6 @@ def help_find_mid(node):
                         for v in original_grammar.get(item):
                             if len(v) == 2 and v[0] == key:
                                 line += '[' + v[0] + ' '
-
     line += node.word + ']]'
     return line
 
@@ -399,13 +379,13 @@ if __name__ == '__main__':
         for s in rtable[0][len(words) - 1]:
             if s.key == 'S':
                 result.append([printTree(s), s.prob])
-        total_prob = 1.0
+        total_prob = 0.0
         if len(result) == 0:
             print('Sentence rejected')
         else:
             print('Sentence accepted')
             for r in result:
-                total_prob *= float(r[1])
+                total_prob += float(r[1])
             print('Sentence Probability: ', total_prob)
             for r in result:
                 print(r[0])
@@ -414,4 +394,3 @@ if __name__ == '__main__':
                 ss_count = getCount(sentence_standard)
                 print('recall: ', calculate_recall(gs_count, ss_count))
                 print('precision: ', calculate_percision(gs_count, ss_count))
-s
