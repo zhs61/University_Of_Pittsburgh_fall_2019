@@ -28,7 +28,7 @@ public class ServerClientThread extends Thread{
 		    Scanner s = new Scanner(inStream);	
 		    String operator = s.nextLine();
 		    if (operator.equals("start")) {
-		    	int peerId = start(serverClient.getInetAddress(), serverClient.getLocalPort());
+		    	int peerId = start(serverClient.getInetAddress(), serverClient.getPort());
 		    	if (peerId >= 0) {
 		    		outStream.writeUTF("true\n" + peerId);
 		    		outStream.flush();
