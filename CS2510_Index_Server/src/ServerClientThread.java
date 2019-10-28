@@ -28,7 +28,8 @@ public class ServerClientThread extends Thread{
 		    Scanner s = new Scanner(inStream);	
 		    String operator = s.nextLine();
 		    if (operator.equals("start")) {
-		    	int peerId = start(serverClient.getInetAddress(), serverClient.getPort());
+		    	String addressPort = s.nextLine();
+		    	int peerId = start(addressPort);
 		    	if (peerId >= 0) {
 		    		outStream.writeUTF("true\n" + peerId);
 		    		outStream.flush();
@@ -101,11 +102,10 @@ public class ServerClientThread extends Thread{
 	 * @param port
 	 * @return 1
 	 */
-	private int start(InetAddress address, int port) {
+	private int start(String addressPort) {
 		int peerId = uniquePeerId;
 		uniquePeerId+=1;
-		String addAndPort = address.getHostAddress() + ":" + port;
-		registerPeer.put(peerId, addAndPort);
+		registerPeer.put(peerId, addressPort);
 		return peerId;
 	}
 	

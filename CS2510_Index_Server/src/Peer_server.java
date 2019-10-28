@@ -36,7 +36,7 @@ public class Peer_server implements Runnable{
         //contact indexing services
         long srt=System.currentTimeMillis();
         SocketClient sender=new SocketClient(indexing_sever_address,indexing_sever_port);
-        String resout=sender.sendMessage("start\n"+split);
+        String resout=sender.sendMessage("start\n"+indexing_sever_address+":"+peer_server_port);
         long end=System.currentTimeMillis();
         message++;bytes+=("start"+resout).length()*2;
         response+=end-srt;aver_reponse=(double)response/message;
@@ -137,6 +137,7 @@ public class Peer_server implements Runnable{
         if(peers.equals("file not exist!"))return false;
         String[] peer_address=peers.split("\n");
         if(!split){
+            //desigen 1 choose peer with low load
             for(String peer:peer_address){
                 SocketClient sock = null;
                 try {
@@ -157,15 +158,18 @@ public class Peer_server implements Runnable{
             }
             return false;
         }else{
+            //second design split file
             int order=0;
             String[] file_parts=new String[peer_address.length];
+            //get parts form peers
             for(String peer:peer_address){
                 SocketClient sock = null;
                     obtain_split o=new obtain_split(peer,peer_server_port,filename,peer_address.length,order,file_folder);
                     o.start();
+                    o.join();
                     order++;
             }
-            //merge files to one
+            //merge parts to one
             BufferedWriter res = new BufferedWriter(new FileWriter(file_folder+"/"+filename));
             char[] buffer=new char[1024];
             int count=0;

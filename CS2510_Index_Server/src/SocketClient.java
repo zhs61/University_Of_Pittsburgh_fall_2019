@@ -1,13 +1,11 @@
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
+import java.net.*;
+import java.io.*;
+import java.util.Scanner;
 
 public class SocketClient {
     private String hostName;
     private int portNum;
-    private int delaySecond;    // 发文接收返回报文延时
+    private int delaySecond;
     public SocketClient(String address,int port) {
         this.hostName = address;
         this.portNum = port;
@@ -18,8 +16,7 @@ public class SocketClient {
         try {
             socket = new Socket(hostName, portNum);
         }  catch (IOException e) {
-            System.out.println("-hostName=" + hostName + "   portNum="
-                    + portNum + "---->IO Error" + e.getMessage());
+            return null;
         }
         return socket;
     }
@@ -30,24 +27,19 @@ public class SocketClient {
         char tagChar[]= new char[1024];
         try {
             socket = getSocket();
-            // socket.setKeepAlive(true);
-            if (socket == null) { // 未能得到指定的Socket对象,Socket通讯为空
-                return "0001";
+            if (socket == null) {
+                return "can't create connection";
             }
 
             PrintWriter out = new PrintWriter(socket.getOutputStream());
             out.println(strMessage);
             out.flush();
 
-            final BufferedInputStream inStream = new BufferedInputStream(socket.getInputStream());
+            final DataInputStream inStream = new DataInputStream(socket.getInputStream());
             byte[] buffer=new byte[1024*8];
             int len;
             String temp=null;
-            while ((len=inStream.read(buffer))>0){
-                temp=new String(buffer,0,len);
-                serverString=serverString.concat(temp);
-                buffer=new byte[1024*8];
-            }
+            serverString=inStream.readUTF();
             inStream.close();
             //out.close();
             str=serverString;
@@ -62,7 +54,6 @@ public class SocketClient {
         } finally {
             socket = null;
             str.trim();
-            //log.info("--->返回的socket通讯字符串="+str);
             return str;
         }
     }
