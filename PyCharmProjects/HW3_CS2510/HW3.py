@@ -3,6 +3,8 @@ commend_tox = {}
 
 
 ##https://medium.com/analytics-vidhya/a-guide-to-machine-learning-in-r-for-beginners-part-5-4c00f2366b90
+#https://www.youtube.com/watch?v=zM4VZR0px8E
+#https://www.datacamp.com/community/tutorials/understanding-logistic-regression-python
 def read_file():
     excel_file = 'SFUcorpus.xlsx'
     corpus = pd.read_excel(excel_file, converters={'comment_text':str, 'toxicity_level':str})
