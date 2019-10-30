@@ -1,6 +1,8 @@
 import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
@@ -17,7 +19,7 @@ public class Peer_server implements Runnable{
     private boolean split;
     private int load=0;
     private int bytes=0;
-    private int message=0;
+    public int message=0;
     private int response=0;
     private double aver_reponse;
     private boolean initalized=false;
@@ -36,7 +38,12 @@ public class Peer_server implements Runnable{
         //contact indexing services
         long srt=System.currentTimeMillis();
         SocketClient sender=new SocketClient(indexing_sever_address,indexing_sever_port);
-        String resout=sender.sendMessage("start\n"+indexing_sever_address+":"+peer_server_port);
+        String resout= null;
+        try {
+            resout = sender.sendMessage("start\n"+ InetAddress.getLocalHost()+":"+peer_server_port);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         long end=System.currentTimeMillis();
         message++;bytes+=("start"+resout).length()*2;
         response+=end-srt;aver_reponse=(double)response/message;
@@ -260,16 +267,23 @@ public class Peer_server implements Runnable{
         @Override
         public void run()
         {
+            if(!initalized){
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             String received;
             String toreturn;
             try {
-                String[] input = dis.readUTF().split("\n");
-                boolean split=input[0].equals("true");
-                String filename_to_send=input[1];
-                int order=Integer.parseInt(input[3]);
-                int parts=Integer.parseInt(input[2]);
-                if(filename_to_send.equals("stop")){
-                    return;
+                Scanner s=new Scanner(dis);
+                boolean split=s.nextLine().equals("true");
+                String filename_to_send=s.nextLine();
+                int order=0;int parts=0;
+                if(split) {
+                    order = Integer.parseInt(s.nextLine());
+                    parts = Integer.parseInt(s.nextLine());
                 }
                 if(!filenames.contains(filename_to_send))
                 {
@@ -281,25 +295,29 @@ public class Peer_server implements Runnable{
                 try{
                     File file_to_send = new File(file_folder + "/" + filename_to_send);
                     if(!split) {
-                        mybytearray = new byte[(int) file_to_send.length()];
+                        int len=0;
+                        mybytearray = new byte[1024*8];
                         BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file_to_send));
-                        read_size=bis.read(mybytearray, 0, mybytearray.length);
-                        dos.write(mybytearray, 0, mybytearray.length);
-                        dos.flush();
+                        while((len=bis.read(mybytearray))>0) {
+                            dos.write(mybytearray, 0, len);
+                            dos.flush();
+                        }
                         s.close();
                     }else {
                         int buffer_size=(int) ((file_to_send.length()+parts)/parts);
-                        mybytearray = new byte[buffer_size];
+                        mybytearray = new byte[1024*8];
                         BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file_to_send));
-                        read_size=bis.read(mybytearray,buffer_size*order,buffer_size);
-                        dos.write(mybytearray, buffer_size*order, read_size);
-                        dos.flush();
+                        bis.skip(buffer_size*order);
+                        int len;
+                        while((len=bis.read(mybytearray))>0) {
+                            dos.write(mybytearray, 0, len);
+                            dos.flush();
+                        }
                         s.close();
                     }
                     load--;
 
                 }catch (IOException e){
-                    unregister(filename_to_send);
                     dos.writeUTF("File does not exit");
                     filenames.remove(filename_to_send);
                 }

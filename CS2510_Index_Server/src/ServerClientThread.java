@@ -1,5 +1,6 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -24,29 +25,31 @@ public class ServerClientThread extends Thread{
 	public void run() {
 		try{
 		    DataInputStream inStream = new DataInputStream(serverClient.getInputStream());
-		    DataOutputStream outStream = new DataOutputStream(serverClient.getOutputStream());
+			PrintWriter outStream = new PrintWriter(serverClient.getOutputStream());
 		    Scanner s = new Scanner(inStream);	
 		    String operator = s.nextLine();
 		    if (operator.equals("start")) {
 		    	String addressPort = s.nextLine();
 		    	int peerId = start(addressPort);
 		    	if (peerId >= 0) {
-		    		outStream.writeUTF("true\n" + peerId);
+		    		outStream.write("true\n" + peerId);
 		    		outStream.flush();
 		    	} else {
-		    		outStream.writeUTF("false\n-1");
+		    		outStream.write("false\n-1");
 		    		outStream.flush();
 		    	}
+		    	System.out.println(registerPeer.toString());
 		    } else if (operator.equals("register")) {
 		    	String content = s.nextLine();
 		    	String peerId = s.nextLine();
 		    	if (register(content, peerId) == 1) {
-		            outStream.writeUTF("true");
+		            outStream.write("true");
 		    		outStream.flush();
 		    	} else {
-		    		outStream.writeUTF("false");
+		    		outStream.write("false");
 		    		outStream.flush();
 		    	}
+		    	System.out.println(registerFile.toString());
 		    } else if (operator.equals("search")) {
 		    	String filename = s.nextLine();
 		    	String split = s.nextLine();
@@ -56,17 +59,17 @@ public class ServerClientThread extends Thread{
 		    	} else {
 		    		result = search2(filename);
 		    	}
-		    	outStream.writeUTF(result);
+		    	outStream.write(result);
 	    		outStream.flush();
 		    } else if (operator.contentEquals("load")) {
 		    	String peerid = s.nextLine();
 		    	String load = s.nextLine();
 		    	int result = load(peerid, load);
 		    	if (result == 1) {
-		            outStream.writeUTF("load updated.");
+		            outStream.write("load updated.");
 		    		outStream.flush();
 		    	} else {
-		    		outStream.writeUTF("load not successfully updated!");
+		    		outStream.write("load not successfully updated!");
 		    		outStream.flush();
 		    	}
 		    }
@@ -167,7 +170,7 @@ public class ServerClientThread extends Thread{
 		String result = "";
 		if (registerFile.containsKey(filename)) {
 			ArrayList<Integer> peerId = registerFile.get(filename);
-			int min = -1;
+			int min = Integer.MAX_VALUE;
 			int minPid = -1;
 			for (int pid : peerId) {
 				if (peerLoad.containsKey(pid+"")) {
@@ -176,17 +179,14 @@ public class ServerClientThread extends Thread{
 						min = localMin;
 						minPid = pid;
 					}
-				} else {
-					result += registerPeer.get(pid);
-					result += "\n";
-					return result;
 				}
 			}
 			if (minPid != -1) {
 				result += registerPeer.get(minPid);
 				result += "\n";
 			} else {
-				result = "file not exist!";
+				result += registerPeer.get(peerId.get(0));
+				result += "\n";
 			}
 			return result;
 		} else { 

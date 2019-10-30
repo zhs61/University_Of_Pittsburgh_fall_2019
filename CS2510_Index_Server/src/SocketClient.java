@@ -36,9 +36,6 @@ public class SocketClient {
             out.flush();
 
             final DataInputStream inStream = new DataInputStream(socket.getInputStream());
-            byte[] buffer=new byte[1024*8];
-            int len;
-            String temp=null;
             serverString=inStream.readUTF();
             inStream.close();
             //out.close();

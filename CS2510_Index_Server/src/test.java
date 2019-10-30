@@ -3,9 +3,9 @@ public class test {
 	
 	public static void main(String[] args) {
 		SocketClient sc = new SocketClient("localhost", 6666);
-//		String line = sc.sendMessage("start");
+		String line = sc.sendMessage("start\nlocalhost:6667");
 //		String line = sc.sendMessage("load\n1\n2");
-		String line = sc.sendMessage("register\ngg\n1");
+//		String line = sc.sendMessage("register\ngg\n1");
 //		String line = sc.sendMessage("search\ngg\nfalse");
 //		String line = sc.sendMessage("search\nggg");
 		//String line = sc.sendMessage("register\nggg\n2");
