@@ -11,6 +11,8 @@ from sklearn.model_selection import train_test_split, KFold
 from warnings import simplefilter
 simplefilter(action='ignore', category=FutureWarning)
 from sklearn import metrics
+from sklearn.metrics import precision_score, recall_score, confusion_matrix, classification_report,accuracy_score, f1_score
+
 
 #===================
 # dowload the google pretrained model:
@@ -107,6 +109,9 @@ def get_tf_idf(no_punc_features):
 def cross_validation(text_representation, toxi, train_size, test_size):
     #X_train, X_test, y_train, y_test = train_test_split(text_representation, toxi, train_size=train_size, test_size=test_size, random_state=0)
     score = []
+    precision_macro = []
+    recall_macro = []
+    f1_macro = []
     text_representation = np.array(text_representation)
     toxi = np.array(toxi)
     kf = KFold(n_splits=10, shuffle=True)
@@ -114,7 +119,11 @@ def cross_validation(text_representation, toxi, train_size, test_size):
         X_train, X_test, y_train, y_test = text_representation[train_index], text_representation[test_index], toxi[train_index], toxi[test_index]
         classifier = get_classifier(X_train, y_train)
         score.append(classifier.score(X_test, y_test))
-    return score
+        y_pred = classifier.predict(X_test)
+        precision_macro.append(metrics.precision_score(y_test, y_pred, average='macro'))
+        recall_macro.append(metrics.recall_score(y_test, y_pred, average='macro'))
+        f1_macro.append(metrics.f1_score(y_test, y_pred, average='macro'))
+    return score, precision_macro, recall_macro, f1_macro
 
 
 def get_classifier(X_train, y_train):
@@ -124,21 +133,32 @@ def get_classifier(X_train, y_train):
 
 
 def main():
+    import warnings
+    warnings.filterwarnings('ignore')
     features, toxi = read_file()
     no_punc_features = remove_punctuation(features)
     bow = get_bow(no_punc_features)
-    score = cross_validation(bow, toxi, 0.8, 0.2)
-    print(np.mean(score))
-
-    tfidf = get_tf_idf(no_punc_features)
-    score = cross_validation(tfidf, toxi, 0.8, 0.2)
-    print(np.mean(score))
+    score, precision, recall, f1 = cross_validation(bow, toxi, 0.8, 0.2)
+    print('Bag-of-word Score: ', np.mean(score))
+    print('Bag-of-word Precision: ', np.mean(precision))
+    print('Bag-of-word Recall: ', np.mean(recall))
+    print('Bag-of-word f1: ', np.mean(f1))
 
     # majority voting
     temp_toxi = []
     for x in toxi:
         temp_toxi.append('1')
-    print(metrics.accuracy_score(toxi, temp_toxi))
+    print('Majority Voting: ', metrics.accuracy_score(toxi, temp_toxi))
+    print('Majority Precision: ', metrics.precision_score(toxi, temp_toxi, average='macro'))
+    print('Majority Recall: ', metrics.recall_score(toxi, temp_toxi, average='macro'))
+    print('Majority f1: ', metrics.f1_score(toxi, temp_toxi, average='macro'))
+
+    tfidf = get_tf_idf(no_punc_features)
+    score, precision, recall, f1 = cross_validation(tfidf, toxi, 0.8, 0.2)
+    print('Tf-idf Score: ', np.mean(score))
+    print('Tf-idf Precision: ', np.mean(precision))
+    print('Tf-idf Recall: ', np.mean(recall))
+    print('Tf-idf f1: ', np.mean(f1))
 
 
     # model = gensim.models.Word2Vec(no_punc_features, workers=4)
@@ -149,7 +169,7 @@ def main():
     # print(np.mean(score))
 
     model = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True, limit=100000)
-    all_words = [nltk.word_tokenize(sent) for sent in no_punc_features]
+    #all_words = [nltk.word_tokenize(sent) for sent in no_punc_features]
     # X = model[model.wv.vocab]
     # lg = LogisticRegression(solver='lbfgs', multi_class='auto', max_iter=1500)
     # result = lg.fit(X, toxi)
@@ -162,8 +182,11 @@ def main():
     mean_embedding_vectorizer = MeanEmbeddingVectorizer(model)
     mean_embedded = mean_embedding_vectorizer.fit_transform(no_punc_features)
     # X_train, X_test, y_train, y_test = train_test_split(mean_embedded, toxi, train_size=0.8,test_size=0.2, random_state=0)
-    score = cross_validation(mean_embedded, toxi, 0.8, 0.2)
-    print(np.mean(score))
+    score, precision, recall, f1 = cross_validation(mean_embedded, toxi, 0.8, 0.2)
+    print('Word2vec Score: ', np.mean(score))
+    print('Word2vec Precision: ', np.mean(precision))
+    print('Word2vec Recall: ', np.mean(recall))
+    print('Word2vec f1: ', np.mean(f1))
     #model.train(all_words,total_examples=len(all_words), epochs=model.epochs)
 
 
