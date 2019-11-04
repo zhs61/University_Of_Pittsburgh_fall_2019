@@ -2,18 +2,20 @@ import gensim
 import nltk
 import numpy as np
 from nltk.stem.porter import PorterStemmer
+
 stemmer = PorterStemmer()
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, KFold
-from pyspark.mllib.linalg import SparseVector, DenseVector
 from warnings import simplefilter
 simplefilter(action='ignore', category=FutureWarning)
-from gensim.models import Word2Vec
+from sklearn import metrics
 
 #===================
-
+# dowload the google pretrained model:
+#https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit
+#
 class MyTokenizer:
     def __init__(self):
         pass
@@ -132,20 +134,37 @@ def main():
     score = cross_validation(tfidf, toxi, 0.8, 0.2)
     print(np.mean(score))
 
-    # all_words = [nltk.word_tokenize(sent) for sent in no_punc_features]
-    # word2vec = Word2Vec(no_punc_features, min_count=2, workers=4)
-    # max_dataset_size = len(word2vec.wv.syn0)
-    # #score = cross_validation(word2vec.wv.syn0, toxi[:max_dataset_size], 0.8, 0.2)
-    # X_train, X_test, y_train, y_test = train_test_split(word2vec.wv, toxi[:max_dataset_size], train_size=0.8, test_size=0.2, random_state=0)
-    # classifier = get_classifier(X_train, y_train)
-    # score = classifier.score(X_test, y_test)
+    # majority voting
+    temp_toxi = []
+    for x in toxi:
+        temp_toxi.append('1')
+    print(metrics.accuracy_score(toxi, temp_toxi))
+
+
+    # model = gensim.models.Word2Vec(no_punc_features, workers=4)
+    # mean_embedding_vectorizer = MeanEmbeddingVectorizer(model)
+    # mean_embedded = mean_embedding_vectorizer.fit_transform(no_punc_features)
+    # #X_train, X_test, y_train, y_test = train_test_split(mean_embedded, toxi, train_size=0.8,test_size=0.2, random_state=0)
+    # score = cross_validation(mean_embedded, toxi, 0.8, 0.2)
     # print(np.mean(score))
-    model = gensim.models.Word2Vec(no_punc_features, workers=4)
+
+    model = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True, limit=100000)
+    all_words = [nltk.word_tokenize(sent) for sent in no_punc_features]
+    # X = model[model.wv.vocab]
+    # lg = LogisticRegression(solver='lbfgs', multi_class='auto', max_iter=1500)
+    # result = lg.fit(X, toxi)
+    # print(lg.score())
+    # result = []
+    # for x in all_words:
+    #     for y in x:
+    #         result.append(y)
+    # model = gensim.models.Word2Vec(all_words, min_count=1, workers=4)
     mean_embedding_vectorizer = MeanEmbeddingVectorizer(model)
     mean_embedded = mean_embedding_vectorizer.fit_transform(no_punc_features)
-    #X_train, X_test, y_train, y_test = train_test_split(mean_embedded, toxi, train_size=0.8,test_size=0.2, random_state=0)
+    # X_train, X_test, y_train, y_test = train_test_split(mean_embedded, toxi, train_size=0.8,test_size=0.2, random_state=0)
     score = cross_validation(mean_embedded, toxi, 0.8, 0.2)
     print(np.mean(score))
+    #model.train(all_words,total_examples=len(all_words), epochs=model.epochs)
 
 
 if __name__ == '__main__':

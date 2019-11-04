@@ -54,19 +54,8 @@ def bag_of_word_preprocess(no_punc_features):
 def main():
     features, toxi = read_file()
     no_punc_features = remove_punctuation(features)
-    vectorizer = TfidfVectorizer()
-    vectorizer.fit(no_punc_features)
-    print(vectorizer.idf_)
-    vector = vectorizer.transform(no_punc_features)
-    print(vector.toarray())
 
 
-
-    #get_list_of_word(no_punc_features)
-    #bag_of_word_preprocess(no_punc_features)
-
-    # for x in no_punc_features:
-    #     print(x)
 
 
 if __name__ == '__main__':
