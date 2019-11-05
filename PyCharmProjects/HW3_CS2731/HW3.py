@@ -1,18 +1,19 @@
+import re
 import gensim
 import nltk
 import numpy as np
 from nltk.stem.porter import PorterStemmer
-
+import warnings
+warnings.filterwarnings('ignore')
 stemmer = PorterStemmer()
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, KFold
 from warnings import simplefilter
 simplefilter(action='ignore', category=FutureWarning)
 from sklearn import metrics
-from sklearn.metrics import precision_score, recall_score, confusion_matrix, classification_report,accuracy_score, f1_score
-
+import timeit
 
 #===================
 # dowload the google pretrained model:
@@ -69,6 +70,8 @@ bag_of_word = {}
 # https://www.datacamp.com/community/tutorials/understanding-logistic-regression-python
 # bag of word:
 #    https://medium.com/greyatom/an-introduction-to-bag-of-words-in-nlp-ac967d43b428
+# precission and recall
+#https://simonhessner.de/why-are-precision-recall-and-f1-score-equal-when-using-micro-averaging-in-a-multi-class-problem/
 def read_file():
     excel_file = 'SFUcorpus.xlsx'
     corpus = pd.read_excel(excel_file, dtype={'comment_text': str, 'toxicity_level': str})
@@ -91,6 +94,22 @@ def remove_punctuation(features):
             if char.isalpha() or char == ' ':
                 no_punct = no_punct + char
         result.append(no_punct)
+    return result
+
+def remove_punctuation_num__stopword(features):
+    result = []
+    for sentence in features:
+        no_punct = ""
+        sentence = sentence.lower()
+        for char in sentence:
+            if char.isalpha() or char == ' ':
+                no_punct = no_punct + char
+        result.append(no_punct)
+    result = [re.sub(r'\d+', 'num', X) for X in result]
+    stopwords = set(nltk.corpus.stopwords.words('english') + ['reuter', '\x03'])
+    result = [[word for word in article.split() if word not in stopwords] for article in result]
+    stemmer = nltk.stem.PorterStemmer()
+    result = [" ".join([stemmer.stem(word) for word in article]) for article in result]
     return result
 
 def get_bow(no_punc_features):
@@ -133,10 +152,12 @@ def get_classifier(X_train, y_train):
 
 
 def main():
-    import warnings
-    warnings.filterwarnings('ignore')
+    start = timeit.default_timer()
     features, toxi = read_file()
-    no_punc_features = remove_punctuation(features)
+    #no_punc_features = remove_punctuation(features)
+    #Pre processing method for step 5
+    no_punc_features = remove_punctuation_num__stopword(features)
+
     bow = get_bow(no_punc_features)
     score, precision, recall, f1 = cross_validation(bow, toxi, 0.8, 0.2)
     print('Bag-of-word Score: ', np.mean(score))
@@ -188,6 +209,8 @@ def main():
     print('Word2vec Recall: ', np.mean(recall))
     print('Word2vec f1: ', np.mean(f1))
     #model.train(all_words,total_examples=len(all_words), epochs=model.epochs)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
 
 
 if __name__ == '__main__':
