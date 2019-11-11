@@ -4,14 +4,15 @@ import nltk
 import numpy as np
 from nltk.stem.porter import PorterStemmer
 import warnings
+from scipy.stats import stats
 warnings.filterwarnings('ignore')
 stemmer = PorterStemmer()
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, KFold
-from warnings import simplefilter
-simplefilter(action='ignore', category=FutureWarning)
+# from warnings import simplefilter
+# simplefilter(action='ignore', category=FutureWarning)
 from sklearn import metrics
 import timeit
 
@@ -154,16 +155,17 @@ def get_classifier(X_train, y_train):
 def main():
     start = timeit.default_timer()
     features, toxi = read_file()
-    #no_punc_features = remove_punctuation(features)
+    no_punc_features = remove_punctuation(features)
     #Pre processing method for step 5
-    no_punc_features = remove_punctuation_num__stopword(features)
+    #no_punc_features = remove_punctuation_num__stopword(features)
 
+    # Bag of words
     bow = get_bow(no_punc_features)
-    score, precision, recall, f1 = cross_validation(bow, toxi, 0.8, 0.2)
-    print('Bag-of-word Score: ', np.mean(score))
-    print('Bag-of-word Precision: ', np.mean(precision))
-    print('Bag-of-word Recall: ', np.mean(recall))
-    print('Bag-of-word f1: ', np.mean(f1))
+    score_bow, precision_bow, recall_bow, f1_bow = cross_validation(bow, toxi, 0.8, 0.2)
+    print('Bag-of-word Score: ', np.mean(score_bow))
+    print('Bag-of-word Precision: ', np.mean(precision_bow))
+    print('Bag-of-word Recall: ', np.mean(recall_bow))
+    print('Bag-of-word f1: ', np.mean(f1_bow))
 
     # majority voting
     temp_toxi = []
@@ -174,43 +176,31 @@ def main():
     print('Majority Recall: ', metrics.recall_score(toxi, temp_toxi, average='macro'))
     print('Majority f1: ', metrics.f1_score(toxi, temp_toxi, average='macro'))
 
+    #tf-idf
     tfidf = get_tf_idf(no_punc_features)
-    score, precision, recall, f1 = cross_validation(tfidf, toxi, 0.8, 0.2)
-    print('Tf-idf Score: ', np.mean(score))
-    print('Tf-idf Precision: ', np.mean(precision))
-    print('Tf-idf Recall: ', np.mean(recall))
-    print('Tf-idf f1: ', np.mean(f1))
+    score_tf, precision_tf, recall_tf, f1_tf = cross_validation(tfidf, toxi, 0.8, 0.2)
+    print('Tf-idf Score: ', np.mean(score_tf))
+    print('Tf-idf Precision: ', np.mean(precision_tf))
+    print('Tf-idf Recall: ', np.mean(recall_tf))
+    print('Tf-idf f1: ', np.mean(f1_tf))
 
-
-    # model = gensim.models.Word2Vec(no_punc_features, workers=4)
-    # mean_embedding_vectorizer = MeanEmbeddingVectorizer(model)
-    # mean_embedded = mean_embedding_vectorizer.fit_transform(no_punc_features)
-    # #X_train, X_test, y_train, y_test = train_test_split(mean_embedded, toxi, train_size=0.8,test_size=0.2, random_state=0)
-    # score = cross_validation(mean_embedded, toxi, 0.8, 0.2)
-    # print(np.mean(score))
-
+    #Word2vec
+    #load the pretrained Google word2vec model
     model = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True, limit=100000)
-    #all_words = [nltk.word_tokenize(sent) for sent in no_punc_features]
-    # X = model[model.wv.vocab]
-    # lg = LogisticRegression(solver='lbfgs', multi_class='auto', max_iter=1500)
-    # result = lg.fit(X, toxi)
-    # print(lg.score())
-    # result = []
-    # for x in all_words:
-    #     for y in x:
-    #         result.append(y)
-    # model = gensim.models.Word2Vec(all_words, min_count=1, workers=4)
     mean_embedding_vectorizer = MeanEmbeddingVectorizer(model)
     mean_embedded = mean_embedding_vectorizer.fit_transform(no_punc_features)
-    # X_train, X_test, y_train, y_test = train_test_split(mean_embedded, toxi, train_size=0.8,test_size=0.2, random_state=0)
-    score, precision, recall, f1 = cross_validation(mean_embedded, toxi, 0.8, 0.2)
-    print('Word2vec Score: ', np.mean(score))
-    print('Word2vec Precision: ', np.mean(precision))
-    print('Word2vec Recall: ', np.mean(recall))
-    print('Word2vec f1: ', np.mean(f1))
-    #model.train(all_words,total_examples=len(all_words), epochs=model.epochs)
+    score_w2v, precision_w2v, recall_w2v, f1_w2v = cross_validation(mean_embedded, toxi, 0.8, 0.2)
+    print('Word2vec Score: ', np.mean(score_w2v))
+    print('Word2vec Precision: ', np.mean(precision_w2v))
+    print('Word2vec Recall: ', np.mean(recall_w2v))
+    print('Word2vec f1: ', np.mean(f1_w2v))
     stop = timeit.default_timer()
     print('Time: ', stop - start)
+
+    print(stats.ttest_rel(score_tf, score_bow))
+    print(stats.ttest_rel(score_w2v, score_bow))
+    print(stats.ttest_rel(score_tf, score_w2v))
+
 
 
 if __name__ == '__main__':
