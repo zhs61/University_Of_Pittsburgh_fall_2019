@@ -3,6 +3,7 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Random;
 import java.util.Scanner;
 
 class ServerClientThread extends Thread {
@@ -45,8 +46,12 @@ class ServerClientThread extends Thread {
 				System.out.println("Successfuly registeed File: " + filename + " Client: " + uId);
 			} else if (operator.equals("newFile")) {
 				String filename = scan.nextLine();
-				newFile(filename, scan);
-			}
+				serverMessage = newFile(filename, scan);
+			} else if (operator.equals("getFile")) {
+				serverMessage = getFileList();
+			} else if (operator.equals("connect")) {
+				serverMessage = connect();
+			} 
 
 			outStream.writeUTF(serverMessage);
 			inStream.close();
@@ -57,6 +62,20 @@ class ServerClientThread extends Thread {
 		}finally{
 			System.out.println("Client-" + clientNo + " exit!! ");
 		}
+	}
+
+	private synchronized String connect() {
+		Random r = new Random();
+		int index = r.nextInt(registerNode.size());
+		return registerNode.get(index);
+	}
+
+	private synchronized String getFileList() {
+		String result = "";
+		for (String str : registerFile.keySet()) {
+			result += str + "\n";
+		}
+		return result;
 	}
 
 	private synchronized void registerFile(String filename, String id) {
@@ -71,9 +90,15 @@ class ServerClientThread extends Thread {
 		registerFile.put(filename, temp);
 	}
 
-	private synchronized void newFile(String filename, Scanner scan) {
-		
-		
+	private synchronized String newFile(String filename, Scanner scan) {
+		String result = "";
+		if (registerFile.contains(filename)) {
+			ArrayList<Integer> temp = registerFile.get(filename);
+			for (Integer i : temp) {
+				result += registerNode.get(i) +"\n";
+			}
+		} 
+		return result;
 	}
 
 	private synchronized boolean registerNode(String address) {
