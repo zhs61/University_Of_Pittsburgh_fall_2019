@@ -5,8 +5,8 @@ import java.util.Hashtable;
 
 public class Directory_server {
 	
-	public static Hashtable<Integer, String> registerNode = new Hashtable<>();
-	public static Hashtable<String, ArrayList<Integer>> registerFile = new Hashtable<>();
+	public static ArrayList<String> registerNode= new ArrayList<>();
+	public static Hashtable<String, ArrayList<String>> registerFile = new Hashtable<>();
 
 	public static void main(String[] args) {
 		try{
@@ -16,7 +16,7 @@ public class Directory_server {
 			while(true){
 				counter++;
 				Socket serverClient=server.accept();  //server accept the client connection request
-				System.out.println(" >> " + "Client No:" + counter + " started!");
+				System.out.println(" >> " + "Thread No:" + counter + " started!");
 				ServerClientThread sct = new ServerClientThread(serverClient,counter, registerNode, registerFile); //send  the request to a separate thread
 				sct.start();
 			}
