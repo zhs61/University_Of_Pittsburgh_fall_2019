@@ -2,26 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="797732b6-d8ca-4963-a0d7-4ebcd3500cab" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../CS2510_project2/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/../CS2510_project2/.classpath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CS2510_project2/bin/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../CS2510_project2/bin/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CS2510_project2/bin/Directory_server.class" beforeDir="false" afterPath="$PROJECT_DIR$/../CS2510_project2/bin/Directory_server.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CS2510_project2/bin/ServerClientThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/../CS2510_project2/bin/ServerClientThread.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CS2510_project2/bin/TestClient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CS2510_project2/src/Directory_server.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CS2510_project2/src/Directory_server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CS2510_project2/src/ServerClientThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CS2510_project2/src/ServerClientThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CS2510_project2/src/TestClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HW1_CS2731 2/backoff_trigram_model.de" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HW1_CS2731 2/backoff_trigram_model.en" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HW1_CS2731 2/backoff_trigram_model.es" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HW1_CS2731 2/interpolation_trigram_model.de" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HW1_CS2731 2/interpolation_trigram_model.en" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HW1_CS2731 2/interpolation_trigram_model.es" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HW1_CS2731 2/laplace_trigram_model.de" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HW1_CS2731 2/laplace_trigram_model.en" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HW1_CS2731 2/laplace_trigram_model.es" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HW1_CS2731 2/test_model.de" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HW1_CS2731 2/test_model.en" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HW1_CS2731 2/test_model.es" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../HW2_CS2710/.idea/HW2_CS2710.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../HW2_CS2710/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../HW2_CS2710/.idea/misc.xml" beforeDir="false" />
@@ -363,7 +343,6 @@
       <change beforePath="$PROJECT_DIR$/../HW2_CS2710/venv/lib/python3.6/site-packages/setuptools-40.8.0-py3.6.egg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../HW2_CS2710/venv/lib/python3.6/site-packages/setuptools.pth" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../HW2_CS2710/venv/pyvenv.cfg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
