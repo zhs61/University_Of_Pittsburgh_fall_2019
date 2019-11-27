@@ -1,6 +1,9 @@
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -10,19 +13,18 @@ import java.util.Scanner;
 class ServerClientThread extends Thread {
 	Socket serverClient;
 	int clientNo;
-	int squre;
 	String address;
 	int port;
 	ArrayList<String> registerNode;
 	Hashtable<String, ArrayList<String>> registerFile;
-	
+
 	ServerClientThread(Socket inSocket,int counter, ArrayList<String> registerNode, Hashtable<String, ArrayList<String>> registerFile){
 		serverClient = inSocket;
 		clientNo=counter;
 		this.registerNode = registerNode;
 		this.registerFile = registerFile;
 	}
-	
+
 	public void run(){
 		try{
 			DataInputStream inStream = new DataInputStream(serverClient.getInputStream());
@@ -33,34 +35,34 @@ class ServerClientThread extends Thread {
 			address = serverClient.getInetAddress().getHostAddress();
 			port = serverClient.getPort();
 			String addPort = address + ":" + port;
-			System.out.println("Thread-" +clientNo+ ": input message is: "+clientMessage);
 
-			if (operator.equals("report")) {
-				boolean isRegisted = registerNode(scan, addPort);
-				if (isRegisted) {
-					System.out.println("Successfuly registeed Thread: " + clientNo);
+			if (operator.equals("newFile")) {
+				System.out.println("Start of New File method ============================");
+				String filename = scan.nextLine();
+				String Lport = scan.nextLine();
+				String addLPort = address + ":" + Lport;
+				if (newFile(filename, addLPort)){
 					serverMessage = "true";
 				} else {
-					System.out.println("Unuccessfuly registeed Thread: " + clientNo);
 					serverMessage = "false";
 				}
-			} else if (operator.equals("registerFile")) {
-				String filename = scan.nextLine();
-				String uId = scan.nextLine();
-				registerFile(filename, uId);
-				System.out.println("Successfuly registeed File: " + filename + " Client: " + uId);
-			} else if (operator.equals("newFile")) {
-				String filename = scan.nextLine();
-				serverMessage = newFile(filename, addPort);
+				System.out.println("End of New File method ============================");
 			} else if (operator.equals("getFile")) {
 				serverMessage = getFileList();
+				System.out.println("Directory server obtain the file list to client: " + addPort);
 			} else if (operator.equals("connect")) {
 				serverMessage = connect();
+				System.out.println("Directory server ontain the address to client: " + addPort);
 			} else if (operator.equals("init")) {
-				initial(scan, addPort);
+				if (initial(scan, address)) {
+					System.out.println("Successfully initial storage node: " + addPort);
+				} else {
+					System.out.println("Unsuccessfully initial storage node: " + addPort);
+				}
+				serverMessage = "true";
 			}
 
-			outStream.writeUTF(serverMessage);
+			outStream.write(serverMessage.getBytes());
 			outStream.flush();
 			inStream.close();
 			outStream.close();
@@ -87,6 +89,7 @@ class ServerClientThread extends Thread {
 	 * @return
 	 */
 	private synchronized String getFileList() {
+		System.out.println("Client wants to get the file list.");
 		String result = "";
 		for (String str : registerFile.keySet()) {
 			result += str + "\n";
@@ -95,119 +98,94 @@ class ServerClientThread extends Thread {
 	}
 
 	/**
-	 * Register a single file at a time, add the storage address to the directory server.
-	 * @param filename
-	 * @param addPort
-	 */
-	private synchronized void registerFile(String filename, String addPort) {
-		ArrayList<String> temp;
-		if (registerFile.contains(filename)) {
-			temp = registerFile.get(filename);	
-		} else {
-			temp = new ArrayList<String>();
-		}
-		temp.add(addPort);
-		registerFile.put(filename, temp);
-	}
-
-	/**
-	 * Invoke by storae node to get the location fo the other storage node.
+	 * Invoke by storage node to get the location of the other storage node.
 	 * @param filename
 	 * @param addPort
 	 * @return
 	 */
-	private synchronized String newFile(String filename, String addPort) {
-		String result = "";
-		if (registerFile.contains(filename)) {
-			ArrayList<String> temp = registerFile.get(filename);
-			for (String add : temp) {
-				if (!add.equals(addPort)) {
-					result += add +"\n";
-				}
+	private synchronized boolean newFile(String filename, String addPort) {
+		System.out.println("Storage node wants to add new file: " + filename);
+		String nodeNeedUpdate = "";
+		for (String add : registerNode) {
+			if (!add.contentEquals(addPort)) {
+				nodeNeedUpdate = nodeNeedUpdate + add + "\n";
 			}
-		} else {
-			System.out.println("File not exist!");
 		}
-		return result;
+		ArrayList<String> result = sendReplicaRequest(filename, nodeNeedUpdate);
+		if (result == null) {
+			System.out.println("Not succeffuly set up the socket.");
+			return false;
+		} else if (result.size()==0) {
+			System.out.println("Succeffully consistent all nodes and file.");
+		} else if (result.size()>=1) {
+			System.out.println("Some node are not successfully get file: ");
+			for (String add : result) {
+				System.out.println(add);
+			}
+			return false;
+		}
+		return true;
 	}
 
 	/**
-	 * Invoke by storage node to report the file store on it. 
-	 * @param scan
-	 * @param addPort
-	 * @return
+	 * Establish a socket to call call the replica method in storage node to send file to other storage nodes.
+	 * @param filename
+	 * @param nodeNeedUpdate
+	 * @return 
 	 */
-	private synchronized boolean registerNode(Scanner scan, String addPort) {
-		String filenames = "";
-		while(scan.hasNextLine()) {
-			String line = scan.nextLine();
-			filenames += line + " ";
-		}
-		String[] split = filenames.split(" ");
-		for (String filename : split) {
-			if (registerFile.contains(filename)) {
-				ArrayList<String> temp = registerFile.get(filename);
-				temp.add(addPort);
-				registerFile.put(filename, temp);
-			} else {
-				ArrayList<String> temp = new ArrayList<>();
-				temp.add(addPort);
-				registerFile.put(filename, temp);
-			}
-			
-		}
-		return true;
-	}
-	
-	private synchronized boolean checkConsistency() {
-		for (String filename : registerFile.keySet()) {
-			ArrayList<String> nodes = registerFile.get(filename);
-			if (nodes.size()!=registerNode.size()) {
-				String nodeNeedUpdate = "";
-				for (String node : registerNode) {
-					if (!nodes.contains(node)) {
-						nodeNeedUpdate += node + "\n";
-					}
-				}
-				sendReplicaRequest(filename, nodeNeedUpdate);
-			}else {
-				continue;
-			}
-		}
-		return true;
-	}
-
-	private synchronized void sendReplicaRequest(String filename, String nodeNeedUpdate) {
+	private synchronized ArrayList<String> sendReplicaRequest(String filename, String nodeNeedUpdate) {
 		try {
 			Socket socket=new Socket(address,port);
-			DataInputStream inStream = new DataInputStream(serverClient.getInputStream());
-			DataOutputStream outStream = new DataOutputStream(serverClient.getOutputStream());
+			DataInputStream inStream = new DataInputStream(socket.getInputStream());
+			DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
 			String clientMessage="", serverMessage="";
 			serverMessage = "replicate\n" + filename + "\n" + nodeNeedUpdate;
-			outStream.writeUTF(serverMessage);
+			outStream.write(serverMessage.getBytes());
+			System.out.println("Sending request to storage node: " + address + ":" + port);
 			outStream.flush();
-			
+			Scanner scan = new Scanner(inStream);
+			ArrayList<String> failedNode = new ArrayList<>();
+			while (scan.hasNextLine()) {
+				String result = scan.nextLine();
+				String address = scan.nextLine();
+				if (result.contentEquals("false")) {
+					failedNode.add(address);
+				}
+			}
 			outStream.close();
+			inStream.close();
+			socket.close();
+			return failedNode;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		return null;
 	}
-	
-	private synchronized void initial(Scanner scan, String addPort) {
-		registerNode.add(addPort);
-		while (scan.hasNext()) {
+
+	/**
+	 * When the storage nodes are online, they will call this method to initial themselves in the system.
+	 * it will first record the address of the node and store the filenames in the storage node.
+	 * @param scan
+	 */
+	private synchronized boolean initial(Scanner scan, String address) {
+		String port = scan.nextLine();
+		String addLPort = address + ":" + port;
+		registerNode.add(addLPort);
+		System.out.println("Successfully registered address: " + addLPort);
+		int numOfFile = Integer.parseInt(scan.nextLine());
+		for (int i = 0; i < numOfFile; i++) {
 			String filename = scan.nextLine();
 			if (registerFile.contains(filename)) {
 				ArrayList<String> temp = registerFile.get(filename);
-				temp.add(addPort);
+				temp.add(addLPort);
 				registerFile.put(filename, temp);
 			} else {
 				ArrayList<String> temp = new ArrayList<>();
-				temp.add(addPort);
+				temp.add(addLPort);
 				registerFile.put(filename, temp);
 			}
+			System.out.println("Registered file: " + filename);
 		}
+		return true;
 	}
 }

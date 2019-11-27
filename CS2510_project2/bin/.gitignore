@@ -1,3 +1,16 @@
+/BackUp_Directory_server.class
+/Directory_server$1.class
+/evaluate$client_thread.class
+/evaluate.class
+/DFS.class
+/DFS_client.class
+/Directory_server$pingFromBs.class
 /Directory_server.class
 /ServerClientThread.class
-/TestClient.class
+/SocketClient.class
+/StorageNode$1.class
+/StorageNode$2.class
+/StorageNode$3.class
+/StorageNode$data_communication_handler.class
+/StorageNode$directory_sever_request_handler.class
+/StorageNode.class
